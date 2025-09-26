@@ -3,26 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lógica en el País de lo Ilógico</title>
+  <title>Laberinto de Alicia</title>
   <style>
-    /* RESET & GENERAL */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
+
+    html, body {
+      height: 100%;
+      width: 100%;
       font-family: 'Arial', sans-serif;
+      background-color: #fff;
+    }
+
+    #laberintoContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+    }
+
+    canvas {
+      border: 5px solid #444;
+      background-color: #fff;
+    }
+
+    /* Contenido de la página (oculto al inicio) */
+    #paginaPrincipal {
+      display: none;
       padding: 20px;
-      transition: background-color 1s, color 1s;
     }
-    .fade-in {
-      animation: fadeIn 1s ease forwards;
-      opacity: 0;
+
+    /* Aquí copiamos estilos del mundo logico/ilogico simplificado */
+    body.logico {
+      background-color: #e0e0e0;
+      color: #222;
     }
-    @keyframes fadeIn {
-      to { opacity: 1; }
+
+    body.ilogico {
+      background-color: #b30000;
+      color: #fff;
+    }
+
+    section {
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
     }
 
     header, footer { text-align: center; margin-bottom: 30px; }
     header h1 { font-size: 2.5em; transition: color 0.5s; }
-    footer { margin-top: 50px; color: #777; }
 
     button {
       background-color: #4CAF50;
@@ -33,9 +62,7 @@
       border-radius: 5px;
       cursor: pointer;
       margin-top: 15px;
-      transition: transform 0.3s;
     }
-    button:hover { transform: scale(1.05); }
 
     img {
       max-width: 100%;
@@ -44,55 +71,9 @@
       margin-bottom: 20px;
     }
 
-    main section {
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 30px;
-    }
+    .respuesta { display: none; margin-top: 10px; font-style: italic; }
+    .show { display: block; }
 
-    /* MUNDO LÓGICO */
-    body.logico {
-      background-color: #e0e0e0;
-      color: #222;
-    }
-
-    #contenidoLogico {
-      background: #fff;
-      border: 2px solid #333;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-
-    /* MUNDO ILÓGICO */
-    body.ilogico {
-      background-color: #b30000; /* Rojo intenso */
-      color: #fff;
-    }
-
-    #contenidoIlogico {
-      background: #3b003b;
-      border: 3px dashed #ffda77;
-      box-shadow: 0 0 12px #ffda77;
-    }
-
-    #contenidoIlogico h2, #contenidoIlogico blockquote {
-      color: #ffda77;
-    }
-
-    .acertijo, .juego {
-      margin-top: 20px;
-    }
-
-    .respuesta {
-      display: none;
-      margin-top: 10px;
-      font-style: italic;
-    }
-
-    .show {
-      display: block;
-    }
-
-    /* EFECTO TEMBLOR */
     .temblor {
       animation: shake 0.5s ease;
     }
@@ -107,113 +88,118 @@
   </style>
 </head>
 <body class="logico">
-  <header>
-    <h1>Lógica en el País de lo Ilógico</h1>
-    <button id="toggleMundo">Cambiar a Mundo Ilógico</button>
-  </header>
 
-  <main>
-    <!-- MUNDO LÓGICO -->
-    <section id="contenidoLogico" class="fade-in">
-      <h2>Mundo Lógico</h2>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
-      <p>Este es un mundo basado en lógica... incluso en una historia tan extraña como Alicia.</p>
+  <!-- 🧩 Pantalla de Laberinto -->
+  <div id="laberintoContainer">
+    <canvas id="laberinto" width="400" height="400"></canvas>
+  </div>
 
-      <div class="acertijo">
-        <strong>Acertijo 1 (Sombrerero):</strong>  
-        <p>¿En qué se parece un cuervo a un escritorio?</p>
-        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta">¡Nadie lo sabe! El Sombrerero nunca respondió. 😉</p>
-      </div>
+  <!-- 🎩 Página Principal -->
+  <div id="paginaPrincipal">
+    <header>
+      <h1>Lógica en el País de lo Ilógico</h1>
+      <button id="toggleMundo">Cambiar a Mundo Ilógico</button>
+    </header>
 
-      <div class="acertijo">
-        <strong>Acertijo 2 (Reina de Corazones):</strong>  
-        <p>¿Cuántos segundos hay en un año, si cada mes tiene al menos uno?</p>
-        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta">12 — uno por cada "2° día" del mes. (2 de enero, 2 de febrero...)</p>
-      </div>
+    <main>
+      <!-- MUNDO LÓGICO -->
+      <section id="contenidoLogico">
+        <h2>Mundo Lógico</h2>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
+        <div class="acertijo">
+          <strong>Acertijo 1:</strong> ¿En qué se parece un cuervo a un escritorio?
+          <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
+          <p class="respuesta">¡Nadie lo sabe!</p>
+        </div>
+      </section>
 
-      <div class="acertijo">
-        <strong>Acertijo 3 (Gato de Cheshire):</strong>
-        <p>Estoy siempre ahí, pero no puedes tocarme. Cambio constantemente, pero no me ves moverte. ¿Qué soy?</p>
-        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta">El tiempo.</p>
-      </div>
-    </section>
+      <!-- MUNDO ILÓGICO -->
+      <section id="contenidoIlogico" style="display: none;">
+        <h2>Mundo Ilógico</h2>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
+        <div class="juego">
+          <strong>Juego absurdo:</strong>
+          <button onclick="respuestaAbsurda()">¿Qué es lo ilógico?</button>
+          <p id="respuestaIlogica" class="respuesta"></p>
+        </div>
+      </section>
+    </main>
 
-    <!-- MUNDO ILÓGICO -->
-    <section id="contenidoIlogico" class="fade-in" style="display: none;">
-      <h2>Mundo Ilógico</h2>
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
-      <p>Aquí nada tiene sentido... y eso tiene todo el sentido del mundo.</p>
-      <blockquote>"¡Estamos todos locos aquí!" —Gato de Cheshire</blockquote>
-
-      <div class="juego">
-        <strong>Juego absurdo:</strong>
-        <p>Haz clic para obtener una respuesta sin sentido:</p>
-        <button onclick="respuestaAbsurda()">¿Qué es lo ilógico?</button>
-        <p id="respuestaIlogica" class="respuesta"></p>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>Inspirado en Alicia en el País de las Maravillas.</p>
-  </footer>
+    <footer>
+      <p>Inspirado en Alicia en el País de las Maravillas.</p>
+    </footer>
+  </div>
 
   <script>
-    const boton = document.getElementById('toggleMundo');
-    const body = document.body;
-    const logico = document.getElementById('contenidoLogico');
-    const ilogico = document.getElementById('contenidoIlogico');
+    // === LABERINTO SIMPLE ===
+    const canvas = document.getElementById("laberinto");
+    const ctx = canvas.getContext("2d");
+    const tileSize = 40;
+    const maze = [
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,1,0,0,0,0,1],
+      [1,0,1,0,1,0,1,1,0,1],
+      [1,0,1,0,0,0,0,1,0,1],
+      [1,0,1,1,1,1,0,1,0,1],
+      [1,0,0,0,0,1,0,0,0,1],
+      [1,1,1,1,0,1,1,1,0,1],
+      [1,0,0,1,0,0,0,1,0,1],
+      [1,0,1,1,1,1,0,1,0,1],
+      [1,1,1,1,1,1,0,1,0,1],
+      [1,0,0,0,0,0,0,1,0,2],
+      [1,1,1,1,1,1,1,1,1,1]
+    ];
+    let player = { x: 1, y: 1 };
 
-    boton.addEventListener('click', () => {
-      if (body.classList.contains('logico')) {
-        // Cambia a mundo ilógico
-        body.classList.remove('logico');
-        body.classList.add('ilogico', 'temblor');
-        logico.style.display = 'none';
-        ilogico.style.display = 'block';
-        ilogico.classList.remove('fade-in');
-        void ilogico.offsetWidth;
-        ilogico.classList.add('fade-in');
-        boton.textContent = 'Cambiar a Mundo Lógico';
-
-        // Quita temblor luego de 500ms
-        setTimeout(() => {
-          body.classList.remove('temblor');
-        }, 500);
-      } else {
-        // Cambia a mundo lógico
-        body.classList.remove('ilogico');
-        body.classList.add('logico');
-        ilogico.style.display = 'none';
-        logico.style.display = 'block';
-        logico.classList.remove('fade-in');
-        void logico.offsetWidth;
-        logico.classList.add('fade-in');
-        boton.textContent = 'Cambiar a Mundo Ilógico';
+    function drawMaze() {
+      for (let y = 0; y < maze.length; y++) {
+        for (let x = 0; x < maze[y].length; x++) {
+          if (maze[y][x] === 1) {
+            ctx.fillStyle = "#333";
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+          } else if (maze[y][x] === 2) {
+            ctx.fillStyle = "gold";
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+          } else {
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+          }
+        }
       }
-    });
-
-    function mostrarRespuesta(btn) {
-      const respuesta = btn.nextElementSibling;
-      respuesta.classList.toggle('show');
+      ctx.fillStyle = "blue";
+      ctx.beginPath();
+      ctx.arc(
+        player.x * tileSize + tileSize / 2,
+        player.y * tileSize + tileSize / 2,
+        tileSize / 3,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
     }
 
-    function respuestaAbsurda() {
-      const respuestas = [
-        "Una tetera que canta ópera.",
-        "El conejo llegó tarde a su propia sombra.",
-        "Un zapato que se enamoró de una galleta.",
-        "La lógica duerme en una taza de té.",
-        "Un sombrero que piensa por ti.",
-        "La Reina decretó que los lunes no existen."
-      ];
-      const random = Math.floor(Math.random() * respuestas.length);
-      document.getElementById('respuestaIlogica').textContent = respuestas[random];
-      document.getElementById('respuestaIlogica').classList.add('show');
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx;
+      const newY = player.y + dy;
+      if (maze[newY][newX] !== 1) {
+        player.x = newX;
+        player.y = newY;
+        drawMaze();
+        if (maze[newY][newX] === 2) {
+          setTimeout(() => {
+            document.getElementById("laberintoContainer").style.display = "none";
+            document.getElementById("paginaPrincipal").style.display = "block";
+            document.body.classList.add("logico");
+          }, 500);
+        }
+      }
     }
-  </script>
-</body>
-</html>
+
+    document.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "ArrowUp": movePlayer(0, -1); break;
+        case "ArrowDown": movePlayer(0, 1); break;
+        case "ArrowLeft": movePlayer(-1, 0); break;
+        case "ArrowRight": movePlayer(1, 0); break;
+      }
+   
