@@ -4,7 +4,156 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lógica en el País de lo Ilógico</title>
-  <link rel="stylesheet" href="estilos.css">
+
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Transición general */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f2f2f2;
+      color: #333;
+      transition: background-color 1s ease, color 0.8s ease;
+      padding: 20px;
+    }
+
+    /* Animación de entrada */
+    .fade-in {
+      animation: fadeIn 1s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* MUNDO LÓGICO */
+    body.logico {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+
+    #contenidoLogico {
+      background-color: #ffffff;
+      border: 2px solid #3a3a3a;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    #contenidoLogico:hover {
+      transform: scale(1.02);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    #contenidoLogico h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    #contenidoLogico blockquote {
+      font-style: italic;
+      margin: 20px 0;
+      padding-left: 20px;
+      border-left: 5px solid #3a3a3a;
+    }
+
+    #contenidoLogico p {
+      font-size: 1.2em;
+    }
+
+    /* MUNDO ILÓGICO */
+    body.ilogico {
+      background-color: #ff77b4;
+      color: #fff;
+    }
+
+    #contenidoIlogico {
+      background-color: #2e2b5f;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      border: 2px dashed #ffda77;
+      box-shadow: 0 0 15px #ffda77;
+      transition: transform 0.8s ease;
+    }
+
+    #contenidoIlogico:hover {
+      transform: rotate(-1deg) scale(1.05);
+    }
+
+    #contenidoIlogico h2 {
+      font-size: 2em;
+      color: #ffda77;
+      margin-bottom: 10px;
+    }
+
+    #contenidoIlogico blockquote {
+      font-size: 1.5em;
+      color: #ffda77;
+      margin: 20px 0;
+      padding-left: 20px;
+      border-left: 5px solid #ffda77;
+    }
+
+    #contenidoIlogico p {
+      font-size: 1.2em;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 3em;
+      color: #222;
+      transition: color 0.5s ease;
+    }
+
+    body.ilogico header h1 {
+      color: #fff;
+    }
+
+    header button {
+      background-color: #4CAF50;
+      color: white;
+      font-size: 1.2em;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.4s ease, transform 0.4s ease;
+    }
+
+    header button:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      margin-top: 50px;
+      font-size: 0.9em;
+      color: #777;
+      transition: color 0.4s ease;
+    }
+
+    body.ilogico footer {
+      color: #ffd;
+    }
+  </style>
 </head>
 <body class="logico">
   <header>
@@ -13,7 +162,7 @@
   </header>
 
   <main>
-    <section id="contenidoLogico">
+    <section id="contenidoLogico" class="fade-in">
       <h2>Mundo Lógico</h2>
       <p>En el mundo lógico, todo tiene una razón de ser. Como diría Alicia:</p>
       <blockquote>
@@ -22,7 +171,7 @@
       <p><strong>Ejemplo de lógica:</strong> Todos los gatos son animales. Cheshire es un gato. Entonces, Cheshire es un animal.</p>
     </section>
 
-    <section id="contenidoIlogico" style="display: none;">
+    <section id="contenidoIlogico" class="fade-in" style="display: none;">
       <h2>Mundo Ilógico</h2>
       <p>Aquí, las reglas se rompen. Nada es lo que parece. Como diría el Sombrerero:</p>
       <blockquote>
@@ -36,6 +185,35 @@
     <p>Inspirado en Alicia en el País de las Maravillas.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const boton = document.getElementById('toggleMundo');
+      const body = document.body;
+      const logico = document.getElementById('contenidoLogico');
+      const ilogico = document.getElementById('contenidoIlogico');
+
+      boton.addEventListener('click', () => {
+        if (body.classList.contains('logico')) {
+          body.classList.remove('logico');
+          body.classList.add('ilogico');
+          logico.style.display = 'none';
+          ilogico.style.display = 'block';
+          ilogico.classList.remove('fade-in');
+          void ilogico.offsetWidth;
+          ilogico.classList.add('fade-in');
+          boton.textContent = 'Cambiar a Mundo Lógico';
+        } else {
+          body.classList.remove('ilogico');
+          body.classList.add('logico');
+          ilogico.style.display = 'none';
+          logico.style.display = 'block';
+          logico.classList.remove('fade-in');
+          void logico.offsetWidth;
+          logico.classList.add('fade-in');
+          boton.textContent = 'Cambiar a Mundo Ilógico';
+        }
+      });
+    });
+  </script>
 </body>
 </html>
