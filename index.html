@@ -211,4 +211,56 @@
     document.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowUp": movePlayer(0, -1); break;
-        case "ArrowDown ​:contentReference[oaicite:0]{index=0}​
+        case "ArrowDown": movePlayer(0, 1); break;
+        case "ArrowLeft": movePlayer(-1, 0); break;
+        case "ArrowRight": movePlayer(1, 0); break;
+      }
+    });
+
+    drawMaze();
+
+    // Página principal
+    document.getElementById('toggleMundo').addEventListener('click', () => {
+      const logico = document.getElementById('contenidoLogico');
+      const ilogico = document.getElementById('contenidoIlogico');
+      const body = document.body;
+      const btn = document.getElementById('toggleMundo');
+
+      if (body.classList.contains('logico')) {
+        body.classList.remove('logico');
+        body.classList.add('ilogico', 'temblor');
+        logico.style.display = 'none';
+        ilogico.style.display = 'block';
+        btn.textContent = 'Cambiar a Mundo Lógico';
+        setTimeout(() => {
+          body.classList.remove('temblor');
+        }, 500);
+      } else {
+        body.classList.remove('ilogico');
+        body.classList.add('logico');
+        ilogico.style.display = 'none';
+        logico.style.display = 'block';
+        btn.textContent = 'Cambiar a Mundo Ilógico';
+      }
+    });
+
+    function mostrarRespuesta(btn) {
+      const respuesta = btn.nextElementSibling;
+      respuesta.classList.toggle('show');
+    }
+
+    function respuestaAbsurda() {
+      const respuestas = [
+        "Una tetera que canta ópera.",
+        "El conejo llegó tarde a su sombra.",
+        "Un zapato se enamoró de una galleta.",
+        "La lógica duerme en una taza de té.",
+        "La Reina decretó que los lunes no existen."
+      ];
+      const r = Math.floor(Math.random() * respuestas.length);
+      document.getElementById('respuestaIlogica').textContent = respuestas[r];
+      document.getElementById('respuestaIlogica').classList.add('show');
+    }
+  </script>
+</body>
+</html>
