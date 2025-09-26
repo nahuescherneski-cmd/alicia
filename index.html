@@ -150,7 +150,7 @@
       [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,1],
       [1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1],
       [1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,1],
-      [1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,1],
+      [1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,1,1,1,0,1,1,0,1],
       [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1,1,1,0,1],
       [1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1,0,0,0,1,1,0,1,1,1,1],
       [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,1],
@@ -161,25 +161,21 @@
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     ];
 
-    let tileSize = 10; // Tamaño de cada celda del laberinto
+    let tileSize = 20;
 
-    // Función para ajustar el tamaño del canvas
     function resizeCanvas() {
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
 
-      // Calculamos el tamaño de la celda en función del tamaño de la ventana
       tileSize = Math.min(canvasWidth, canvasHeight) / Math.max(maze[0].length, maze.length);
-
       canvas.width = maze[0].length * tileSize;
       canvas.height = maze.length * tileSize;
+
       dibujarLaberinto();
     }
 
-    // Función para dibujar el laberinto
     function dibujarLaberinto() {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
-
       for (let y = 0; y < maze.length; y++) {
         for (let x = 0; x < maze[y].length; x++) {
           const tile = maze[y][x];
@@ -199,7 +195,6 @@
 
     // Redibujar el laberinto cuando la ventana se redimensiona
     window.addEventListener('resize', resizeCanvas);
-    
     resizeCanvas();
   </script>
 </body>
