@@ -1,240 +1,163 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Rompecabezas de Alicia</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #fefefe;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Laberinto Genio - Alicia en el País de las Maravillas</title>
+<style>
+  body {
+    background: #111;
+    color: white;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+  }
 
-    #puzzleContainer {
-      display: grid;
-      grid-template-columns: repeat(3, 100px);
-      grid-template-rows: repeat(3, 100px);
-      gap: 2px;
-      margin-top: 50px;
-    }
+  #maze {
+    display: grid;
+    grid-template-columns: repeat(21, 25px);
+    grid-template-rows: repeat(21, 25px);
+    gap: 1px;
+    margin-bottom: 20px;
+  }
 
-    .slot, .piece {
-      width: 100px;
-      height: 100px;
-      background-size: 300px 300px;
-      background-repeat: no-repeat;
-      border: 1px solid #ccc;
-    }
+  .cell {
+    width: 25px;
+    height: 25px;
+    box-sizing: border-box;
+  }
 
-    .slot {
-      background-color: #eee;
-    }
+  .wall {
+    background-color: #222;
+  }
 
-    .piece {
-      cursor: grab;
-    }
+  .path {
+    background-color: #ddd;
+  }
 
-    #piecesContainer {
-      margin-top: 30px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      justify-content: center;
-    }
+  .player {
+    background-color: #007bff;
+    border-radius: 50%;
+    box-shadow: 0 0 5px 2px #3399ff;
+  }
 
-    #paginaPrincipal {
-      display: none;
-      padding: 20px;
-      max-width: 800px;
-      margin: auto;
-    }
+  .exit {
+    background-color: gold;
+    box-shadow: 0 0 8px 3px #ffd700;
+  }
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 1em;
-      border-radius: 5px;
-    }
+  #message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #0f0;
+  }
 
-    body.logico {
-      background-color: #e0e0e0;
-      color: #222;
-    }
-
-    body.ilogico {
-      background-color: #b30000;
-      color: #fff;
-    }
-
-    .temblor {
-      animation: shake 0.5s ease;
-    }
-
-    @keyframes shake {
-      0% { transform: translate(0px, 0px); }
-      25% { transform: translate(5px, -5px); }
-      50% { transform: translate(-5px, 5px); }
-      75% { transform: translate(5px, 5px); }
-      100% { transform: translate(0px, 0px); }
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 10px;
-    }
-  </style>
+  h1 {
+    margin-bottom: 5px;
+  }
+</style>
 </head>
-<body class="logico">
+<body>
 
-  <h2>🧩 Rompecabezas de Alicia</h2>
+<h1>🧠 Laberinto Genio - Alicia en el País de las Maravillas</h1>
+<p>Usa las flechas para mover al jugador azul y salir del laberinto dorado.</p>
 
-  <div id="puzzleContainer"></div>
-  <div id="piecesContainer"></div>
+<div id="maze"></div>
+<div id="message"></div>
 
-  <div id="paginaPrincipal">
-    <header>
-      <h1>Lógica en el País de lo Ilógico</h1>
-      <button id="toggleMundo">Cambiar a Mundo Ilógico</button>
-    </header>
+<script>
+  // Laberinto 21x21: 1 = muro, 0 = camino, 2 = salida
+  const maze = [
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+    [1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,0,1],
+    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1],
+    [1,0,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1],
+    [1,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,1],
+    [1,1,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1],
+    [1,0,1,0,0,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],
+    [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,1],
+    [1,1,1,0,1,1,1,0,1,1,1,1,1,0,1,1,1,0,1,1,1],
+    [1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1],
+    [1,0,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1],
+    [1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,1],
+    [1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,0,1],
+    [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1],
+    [1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,0,1,1,1,1,1],
+    [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,2,1],
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+  ];
 
-    <main>
-      <section id="contenidoLogico">
-        <h2>Mundo Lógico</h2>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
-        <p><strong>Acertijo:</strong> ¿En qué se parece un cuervo a un escritorio?</p>
-        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta" style="display:none;">¡Nadie lo sabe!</p>
-      </section>
+  const rows = maze.length;
+  const cols = maze[0].length;
 
-      <section id="contenidoIlogico" style="display: none;">
-        <h2>Mundo Ilógico</h2>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
-        <p><strong>Juego absurdo:</strong> ¿Qué es lo ilógico?</p>
-        <button onclick="respuestaAbsurda()">Ver respuesta absurda</button>
-        <p id="respuestaIlogica" class="respuesta"></p>
-      </section>
-    </main>
-  </div>
+  const mazeDiv = document.getElementById('maze');
+  const messageDiv = document.getElementById('message');
 
-  <script>
-    const puzzle = document.getElementById('puzzleContainer');
-    const pieces = document.getElementById('piecesContainer');
-    const image = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/300px-Alice_par_John_Tenniel_02.png';
+  // Player position (start)
+  let playerPos = { x: 1, y: 1 };
 
-    const slots = [];
-    const total = 9;
+  // Crear la cuadrícula del laberinto
+  function drawMaze() {
+    mazeDiv.innerHTML = '';
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < cols; x++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
 
-    function createPuzzle() {
-      for (let i = 0; i < total; i++) {
-        const row = Math.floor(i / 3);
-        const col = i % 3;
+        if (maze[y][x] === 1) cell.classList.add('wall');
+        else cell.classList.add('path');
 
-        const slot = document.createElement('div');
-        slot.classList.add('slot');
-        slot.dataset.index = i;
-        slot.ondragover = (e) => e.preventDefault();
-        slot.ondrop = dropPiece;
+        if (x === playerPos.x && y === playerPos.y) {
+          cell.classList.add('player');
+        } else if (maze[y][x] === 2) {
+          cell.classList.add('exit');
+        }
 
-        puzzle.appendChild(slot);
-        slots.push(slot);
-
-        const piece = document.createElement('div');
-        piece.classList.add('piece');
-        piece.draggable = true;
-        piece.dataset.index = i;
-        piece.style.backgroundImage = `url(${image})`;
-        piece.style.backgroundPosition = `-${col * 100}px -${row * 100}px`;
-
-        piece.ondragstart = dragStart;
-
-        pieces.appendChild(piece);
-      }
-
-      // Mezclar las piezas
-      for (let i = pieces.children.length; i >= 0; i--) {
-        pieces.appendChild(pieces.children[Math.random() * i | 0]);
+        mazeDiv.appendChild(cell);
       }
     }
+  }
 
-    let draggedPiece = null;
+  // Mover jugador
+  function movePlayer(dx, dy) {
+    const newX = playerPos.x + dx;
+    const newY = playerPos.y + dy;
 
-    function dragStart(e) {
-      draggedPiece = e.target;
-    }
+    // Verifica límites y si no hay muro
+    if (newX >= 0 && newX < cols && newY >= 0 && newY < rows) {
+      if (maze[newY][newX] !== 1) {
+        playerPos = { x: newX, y: newY };
+        drawMaze();
 
-    function dropPiece(e) {
-      if (!draggedPiece) return;
-      const slot = e.target;
-      if (slot.children.length === 0) {
-        slot.appendChild(draggedPiece);
-        checkPuzzle();
+        // Verificar si ganó
+        if (maze[newY][newX] === 2) {
+          messageDiv.textContent = "🎉 ¡Felicidades! Has salido del laberinto, genio de Alicia.";
+          window.removeEventListener('keydown', handleKeyDown);
+        }
       }
     }
+  }
 
-    function checkPuzzle() {
-      const allPlaced = slots.every(slot => {
-        const piece = slot.firstChild;
-        return piece && piece.dataset.index === slot.dataset.index;
-      });
-
-      if (allPlaced) {
-        alert("🎉 ¡Rompecabezas completado!");
-        document.getElementById('paginaPrincipal').style.display = 'block';
-        puzzle.style.display = 'none';
-        pieces.style.display = 'none';
-      }
+  function handleKeyDown(e) {
+    switch (e.key) {
+      case 'ArrowUp': movePlayer(0, -1); break;
+      case 'ArrowDown': movePlayer(0, 1); break;
+      case 'ArrowLeft': movePlayer(-1, 0); break;
+      case 'ArrowRight': movePlayer(1, 0); break;
     }
+  }
 
-    function mostrarRespuesta(btn) {
-      btn.nextElementSibling.style.display = 'block';
-    }
+  window.addEventListener('keydown', handleKeyDown);
 
-    function respuestaAbsurda() {
-      const respuestas = [
-        "Una tetera que canta ópera.",
-        "El conejo llegó tarde a su sombra.",
-        "Un zapato se enamoró de una galleta.",
-        "La lógica duerme en una taza de té.",
-        "La Reina decretó que los lunes no existen."
-      ];
-      const r = Math.floor(Math.random() * respuestas.length);
-      document.getElementById('respuestaIlogica').textContent = respuestas[r];
-      document.getElementById('respuestaIlogica').classList.add('show');
-    }
+  drawMaze();
+</script>
 
-    document.getElementById('toggleMundo').addEventListener('click', () => {
-      const body = document.body;
-      const logico = document.getElementById('contenidoLogico');
-      const ilogico = document.getElementById('contenidoIlogico');
-      const btn = document.getElementById('toggleMundo');
-
-      if (body.classList.contains('logico')) {
-        body.classList.remove('logico');
-        body.classList.add('ilogico', 'temblor');
-        logico.style.display = 'none';
-        ilogico.style.display = 'block';
-        btn.textContent = 'Cambiar a Mundo Lógico';
-        setTimeout(() => body.classList.remove('temblor'), 500);
-      } else {
-        body.classList.remove('ilogico');
-        body.classList.add('logico');
-        ilogico.style.display = 'none';
-        logico.style.display = 'block';
-        btn.textContent = 'Cambiar a Mundo Ilógico';
-      }
-    });
-
-    createPuzzle();
-  </script>
 </body>
 </html>
