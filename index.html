@@ -44,7 +44,6 @@
       margin-bottom: 20px;
     }
 
-    /* CONTENEDORES */
     main section {
       border-radius: 12px;
       padding: 20px;
@@ -65,12 +64,12 @@
 
     /* MUNDO ILÓGICO */
     body.ilogico {
-      background-color: #ff77b4;
+      background-color: #b30000; /* Rojo intenso */
       color: #fff;
     }
 
     #contenidoIlogico {
-      background: #2e2b5f;
+      background: #3b003b;
       border: 3px dashed #ffda77;
       box-shadow: 0 0 12px #ffda77;
     }
@@ -92,6 +91,19 @@
     .show {
       display: block;
     }
+
+    /* EFECTO TEMBLOR */
+    .temblor {
+      animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+      0% { transform: translate(0px, 0px); }
+      25% { transform: translate(5px, -5px); }
+      50% { transform: translate(-5px, 5px); }
+      75% { transform: translate(5px, 5px); }
+      100% { transform: translate(0px, 0px); }
+    }
   </style>
 </head>
 <body class="logico">
@@ -105,20 +117,27 @@
     <section id="contenidoLogico" class="fade-in">
       <h2>Mundo Lógico</h2>
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
-      <p>En este mundo, todo tiene reglas claras. Observa, analiza y deduce.</p>
+      <p>Este es un mundo basado en lógica... incluso en una historia tan extraña como Alicia.</p>
 
       <div class="acertijo">
-        <strong>Acertijo 1:</strong>  
-        <p>Tengo ciudades, pero no casas. Tengo montañas, pero no árboles. Tengo agua, pero no peces. ¿Qué soy?</p>
+        <strong>Acertijo 1 (Sombrerero):</strong>  
+        <p>¿En qué se parece un cuervo a un escritorio?</p>
         <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta">Un mapa.</p>
+        <p class="respuesta">¡Nadie lo sabe! El Sombrerero nunca respondió. 😉</p>
       </div>
 
       <div class="acertijo">
-        <strong>Acertijo 2:</strong>  
-        <p>¿Qué número falta en la serie? 2, 4, 8, 16, ?, 64</p>
+        <strong>Acertijo 2 (Reina de Corazones):</strong>  
+        <p>¿Cuántos segundos hay en un año, si cada mes tiene al menos uno?</p>
         <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
-        <p class="respuesta">32.</p>
+        <p class="respuesta">12 — uno por cada "2° día" del mes. (2 de enero, 2 de febrero...)</p>
+      </div>
+
+      <div class="acertijo">
+        <strong>Acertijo 3 (Gato de Cheshire):</strong>
+        <p>Estoy siempre ahí, pero no puedes tocarme. Cambio constantemente, pero no me ves moverte. ¿Qué soy?</p>
+        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
+        <p class="respuesta">El tiempo.</p>
       </div>
     </section>
 
@@ -126,13 +145,13 @@
     <section id="contenidoIlogico" class="fade-in" style="display: none;">
       <h2>Mundo Ilógico</h2>
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
-      <p>Aquí nada tiene sentido... ¡y así debe ser!</p>
-      <blockquote>"¡Si yo tuviera un mundo propio, todo sería al revés!"</blockquote>
+      <p>Aquí nada tiene sentido... y eso tiene todo el sentido del mundo.</p>
+      <blockquote>"¡Estamos todos locos aquí!" —Gato de Cheshire</blockquote>
 
       <div class="juego">
         <strong>Juego absurdo:</strong>
-        <p>Haz clic en un botón para obtener una respuesta totalmente incoherente:</p>
-        <button onclick="respuestaAbsurda()">¿Qué es la realidad?</button>
+        <p>Haz clic para obtener una respuesta sin sentido:</p>
+        <button onclick="respuestaAbsurda()">¿Qué es lo ilógico?</button>
         <p id="respuestaIlogica" class="respuesta"></p>
       </div>
     </section>
@@ -143,23 +162,29 @@
   </footer>
 
   <script>
-    // Cambiar de mundo
-    document.getElementById('toggleMundo').addEventListener('click', () => {
-      const body = document.body;
-      const logico = document.getElementById('contenidoLogico');
-      const ilogico = document.getElementById('contenidoIlogico');
-      const boton = document.getElementById('toggleMundo');
+    const boton = document.getElementById('toggleMundo');
+    const body = document.body;
+    const logico = document.getElementById('contenidoLogico');
+    const ilogico = document.getElementById('contenidoIlogico');
 
+    boton.addEventListener('click', () => {
       if (body.classList.contains('logico')) {
+        // Cambia a mundo ilógico
         body.classList.remove('logico');
-        body.classList.add('ilogico');
+        body.classList.add('ilogico', 'temblor');
         logico.style.display = 'none';
         ilogico.style.display = 'block';
         ilogico.classList.remove('fade-in');
         void ilogico.offsetWidth;
         ilogico.classList.add('fade-in');
         boton.textContent = 'Cambiar a Mundo Lógico';
+
+        // Quita temblor luego de 500ms
+        setTimeout(() => {
+          body.classList.remove('temblor');
+        }, 500);
       } else {
+        // Cambia a mundo lógico
         body.classList.remove('ilogico');
         body.classList.add('logico');
         ilogico.style.display = 'none';
@@ -171,21 +196,19 @@
       }
     });
 
-    // Mostrar respuestas lógicas
     function mostrarRespuesta(btn) {
       const respuesta = btn.nextElementSibling;
       respuesta.classList.toggle('show');
     }
 
-    // Respuestas absurdas
     function respuestaAbsurda() {
       const respuestas = [
-        "Un cuervo usando sombrero.",
-        "Una cucharacha tocando el piano.",
-        "42, pero solo los martes.",
-        "Una taza que habla en francés.",
-        "Tu sombra es tu verdadero yo.",
-        "La respuesta está debajo de tu zapato."
+        "Una tetera que canta ópera.",
+        "El conejo llegó tarde a su propia sombra.",
+        "Un zapato que se enamoró de una galleta.",
+        "La lógica duerme en una taza de té.",
+        "Un sombrero que piensa por ti.",
+        "La Reina decretó que los lunes no existen."
       ];
       const random = Math.floor(Math.random() * respuestas.length);
       document.getElementById('respuestaIlogica').textContent = respuestas[random];
