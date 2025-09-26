@@ -6,7 +6,6 @@
   <title>Laberinto de Alicia</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     html, body {
       height: 100%;
       width: 100%;
@@ -16,6 +15,7 @@
 
     #laberintoContainer {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
@@ -25,24 +25,22 @@
     canvas {
       border: 5px solid #444;
       background-color: #fff;
+      margin-bottom: 10px;
     }
 
-    /* Contenido de la página (oculto al inicio) */
+    .infoPanel {
+      margin-top: 10px;
+      font-size: 1.1em;
+      text-align: center;
+    }
+
     #paginaPrincipal {
       display: none;
       padding: 20px;
     }
 
-    /* Aquí copiamos estilos del mundo logico/ilogico simplificado */
-    body.logico {
-      background-color: #e0e0e0;
-      color: #222;
-    }
-
-    body.ilogico {
-      background-color: #b30000;
-      color: #fff;
-    }
+    body.logico { background-color: #e0e0e0; color: #222; }
+    body.ilogico { background-color: #b30000; color: #fff; }
 
     section {
       border-radius: 12px;
@@ -51,7 +49,7 @@
     }
 
     header, footer { text-align: center; margin-bottom: 30px; }
-    header h1 { font-size: 2.5em; transition: color 0.5s; }
+    header h1 { font-size: 2.5em; }
 
     button {
       background-color: #4CAF50;
@@ -89,12 +87,15 @@
 </head>
 <body class="logico">
 
-  <!-- 🧩 Pantalla de Laberinto -->
+  <!-- LABERINTO -->
   <div id="laberintoContainer">
-    <canvas id="laberinto" width="400" height="400"></canvas>
+    <canvas id="laberinto" width="440" height="440"></canvas>
+    <div class="infoPanel">
+      <p><strong>Pasos:</strong> <span id="pasos">0</span> | <strong>Tiempo:</strong> <span id="tiempo">0</span> segundos</p>
+    </div>
   </div>
 
-  <!-- 🎩 Página Principal -->
+  <!-- PÁGINA PRINCIPAL -->
   <div id="paginaPrincipal">
     <header>
       <h1>Lógica en el País de lo Ilógico</h1>
@@ -102,7 +103,7 @@
     </header>
 
     <main>
-      <!-- MUNDO LÓGICO -->
+      <!-- Mundo lógico -->
       <section id="contenidoLogico">
         <h2>Mundo Lógico</h2>
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
@@ -113,7 +114,7 @@
         </div>
       </section>
 
-      <!-- MUNDO ILÓGICO -->
+      <!-- Mundo ilógico -->
       <section id="contenidoIlogico" style="display: none;">
         <h2>Mundo Ilógico</h2>
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
@@ -130,40 +131,42 @@
     </footer>
   </div>
 
+  <!-- SONIDO -->
+  <audio id="winSound" src="https://www.soundjay.com/buttons/sounds/button-3.mp3" preload="auto"></audio>
+
   <script>
-    // === LABERINTO SIMPLE ===
+    // Laberinto
     const canvas = document.getElementById("laberinto");
     const ctx = canvas.getContext("2d");
     const tileSize = 40;
     const maze = [
-      [1,1,1,1,1,1,1,1,1,1],
-      [1,0,0,0,1,0,0,0,0,1],
-      [1,0,1,0,1,0,1,1,0,1],
-      [1,0,1,0,0,0,0,1,0,1],
-      [1,0,1,1,1,1,0,1,0,1],
-      [1,0,0,0,0,1,0,0,0,1],
-      [1,1,1,1,0,1,1,1,0,1],
-      [1,0,0,1,0,0,0,1,0,1],
-      [1,0,1,1,1,1,0,1,0,1],
-      [1,1,1,1,1,1,0,1,0,1],
-      [1,0,0,0,0,0,0,1,0,2],
-      [1,1,1,1,1,1,1,1,1,1]
+      [1,1,1,1,1,1,1,1,1,1,1],
+      [1,0,0,0,0,1,0,0,0,0,1],
+      [1,1,1,1,0,1,0,1,1,0,1],
+      [1,0,0,1,0,0,0,1,0,0,1],
+      [1,0,1,1,1,1,1,1,0,1,1],
+      [1,0,0,0,0,0,0,1,0,0,1],
+      [1,1,1,1,1,1,0,1,1,0,1],
+      [1,0,0,0,0,1,0,0,0,0,1],
+      [1,0,1,1,0,1,1,1,1,1,1],
+      [1,0,0,1,0,0,0,0,0,2,1],
+      [1,1,1,1,1,1,1,1,1,1,1]
     ];
     let player = { x: 1, y: 1 };
+    let pasos = 0;
+    let segundos = 0;
+    let tiempoActivo = false;
+
+    const pasosEl = document.getElementById("pasos");
+    const tiempoEl = document.getElementById("tiempo");
+
+    const winSound = document.getElementById("winSound");
 
     function drawMaze() {
       for (let y = 0; y < maze.length; y++) {
         for (let x = 0; x < maze[y].length; x++) {
-          if (maze[y][x] === 1) {
-            ctx.fillStyle = "#333";
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-          } else if (maze[y][x] === 2) {
-            ctx.fillStyle = "gold";
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-          } else {
-            ctx.fillStyle = "#fff";
-            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-          }
+          ctx.fillStyle = maze[y][x] === 1 ? "#333" : maze[y][x] === 2 ? "gold" : "#fff";
+          ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
       }
       ctx.fillStyle = "blue";
@@ -184,8 +187,18 @@
       if (maze[newY][newX] !== 1) {
         player.x = newX;
         player.y = newY;
+        pasos++;
+        pasosEl.textContent = pasos;
         drawMaze();
+        if (!tiempoActivo) {
+          tiempoActivo = true;
+          setInterval(() => {
+            segundos++;
+            tiempoEl.textContent = segundos;
+          }, 1000);
+        }
         if (maze[newY][newX] === 2) {
+          winSound.play();
           setTimeout(() => {
             document.getElementById("laberintoContainer").style.display = "none";
             document.getElementById("paginaPrincipal").style.display = "block";
@@ -198,8 +211,4 @@
     document.addEventListener("keydown", (e) => {
       switch (e.key) {
         case "ArrowUp": movePlayer(0, -1); break;
-        case "ArrowDown": movePlayer(0, 1); break;
-        case "ArrowLeft": movePlayer(-1, 0); break;
-        case "ArrowRight": movePlayer(1, 0); break;
-      }
-   
+        case "ArrowDown ​:contentReference[oaicite:0]{index=0}​
