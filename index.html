@@ -1,74 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lógica en el País de lo Ilógico</title>
-
   <style>
-    /* Reset */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Transición general */
+    /* RESET & GENERAL */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f2f2f2;
-      color: #333;
-      transition: background-color 1s ease, color 0.8s ease;
       padding: 20px;
+      transition: background-color 1s, color 1s;
     }
-
-    /* Animación de entrada */
     .fade-in {
       animation: fadeIn 1s ease forwards;
       opacity: 0;
     }
-
     @keyframes fadeIn {
-      to {
-        opacity: 1;
-      }
+      to { opacity: 1; }
+    }
+
+    header, footer { text-align: center; margin-bottom: 30px; }
+    header h1 { font-size: 2.5em; transition: color 0.5s; }
+    footer { margin-top: 50px; color: #777; }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      font-size: 1.1em;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: transform 0.3s;
+    }
+    button:hover { transform: scale(1.05); }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+
+    /* CONTENEDORES */
+    main section {
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
     }
 
     /* MUNDO LÓGICO */
     body.logico {
       background-color: #e0e0e0;
-      color: #333;
+      color: #222;
     }
 
     #contenidoLogico {
-      background-color: #ffffff;
-      border: 2px solid #3a3a3a;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
-      transition: transform 0.6s ease, box-shadow 0.6s ease;
-    }
-
-    #contenidoLogico:hover {
-      transform: scale(1.02);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    #contenidoLogico h2 {
-      font-size: 2em;
-      margin-bottom: 10px;
-    }
-
-    #contenidoLogico blockquote {
-      font-style: italic;
-      margin: 20px 0;
-      padding-left: 20px;
-      border-left: 5px solid #3a3a3a;
-    }
-
-    #contenidoLogico p {
-      font-size: 1.2em;
+      background: #fff;
+      border: 2px solid #333;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
     /* MUNDO ILÓGICO */
@@ -78,80 +70,27 @@
     }
 
     #contenidoIlogico {
-      background-color: #2e2b5f;
-      padding: 20px;
-      border-radius: 10px;
-      margin-bottom: 30px;
-      border: 2px dashed #ffda77;
-      box-shadow: 0 0 15px #ffda77;
-      transition: transform 0.8s ease;
+      background: #2e2b5f;
+      border: 3px dashed #ffda77;
+      box-shadow: 0 0 12px #ffda77;
     }
 
-    #contenidoIlogico:hover {
-      transform: rotate(-1deg) scale(1.05);
-    }
-
-    #contenidoIlogico h2 {
-      font-size: 2em;
+    #contenidoIlogico h2, #contenidoIlogico blockquote {
       color: #ffda77;
-      margin-bottom: 10px;
     }
 
-    #contenidoIlogico blockquote {
-      font-size: 1.5em;
-      color: #ffda77;
-      margin: 20px 0;
-      padding-left: 20px;
-      border-left: 5px solid #ffda77;
+    .acertijo, .juego {
+      margin-top: 20px;
     }
 
-    #contenidoIlogico p {
-      font-size: 1.2em;
+    .respuesta {
+      display: none;
+      margin-top: 10px;
+      font-style: italic;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-size: 3em;
-      color: #222;
-      transition: color 0.5s ease;
-    }
-
-    body.ilogico header h1 {
-      color: #fff;
-    }
-
-    header button {
-      background-color: #4CAF50;
-      color: white;
-      font-size: 1.2em;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.4s ease, transform 0.4s ease;
-    }
-
-    header button:hover {
-      background-color: #45a049;
-      transform: scale(1.05);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      margin-top: 50px;
-      font-size: 0.9em;
-      color: #777;
-      transition: color 0.4s ease;
-    }
-
-    body.ilogico footer {
-      color: #ffd;
+    .show {
+      display: block;
     }
   </style>
 </head>
@@ -162,22 +101,40 @@
   </header>
 
   <main>
+    <!-- MUNDO LÓGICO -->
     <section id="contenidoLogico" class="fade-in">
       <h2>Mundo Lógico</h2>
-      <p>En el mundo lógico, todo tiene una razón de ser. Como diría Alicia:</p>
-      <blockquote>
-        "No puedo volver a ayer, porque entonces era una persona diferente."
-      </blockquote>
-      <p><strong>Ejemplo de lógica:</strong> Todos los gatos son animales. Cheshire es un gato. Entonces, Cheshire es un animal.</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Alice_par_John_Tenniel_02.png/600px-Alice_par_John_Tenniel_02.png" alt="Alicia lógica">
+      <p>En este mundo, todo tiene reglas claras. Observa, analiza y deduce.</p>
+
+      <div class="acertijo">
+        <strong>Acertijo 1:</strong>  
+        <p>Tengo ciudades, pero no casas. Tengo montañas, pero no árboles. Tengo agua, pero no peces. ¿Qué soy?</p>
+        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
+        <p class="respuesta">Un mapa.</p>
+      </div>
+
+      <div class="acertijo">
+        <strong>Acertijo 2:</strong>  
+        <p>¿Qué número falta en la serie? 2, 4, 8, 16, ?, 64</p>
+        <button onclick="mostrarRespuesta(this)">Mostrar respuesta</button>
+        <p class="respuesta">32.</p>
+      </div>
     </section>
 
+    <!-- MUNDO ILÓGICO -->
     <section id="contenidoIlogico" class="fade-in" style="display: none;">
       <h2>Mundo Ilógico</h2>
-      <p>Aquí, las reglas se rompen. Nada es lo que parece. Como diría el Sombrerero:</p>
-      <blockquote>
-        "¡Si yo tuviera un mundo propio, todo sería al revés!"
-      </blockquote>
-      <p><strong>Ejemplo ilógico:</strong> ¿Qué se obtiene si se cruza un cuervo con un escritorio? ¡Exacto, nadie lo sabe!</p>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Tenniel_Hatter_Tea-Party.jpg/600px-Tenniel_Hatter_Tea-Party.jpg" alt="Sombrerero loco">
+      <p>Aquí nada tiene sentido... ¡y así debe ser!</p>
+      <blockquote>"¡Si yo tuviera un mundo propio, todo sería al revés!"</blockquote>
+
+      <div class="juego">
+        <strong>Juego absurdo:</strong>
+        <p>Haz clic en un botón para obtener una respuesta totalmente incoherente:</p>
+        <button onclick="respuestaAbsurda()">¿Qué es la realidad?</button>
+        <p id="respuestaIlogica" class="respuesta"></p>
+      </div>
     </section>
   </main>
 
@@ -186,34 +143,54 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const boton = document.getElementById('toggleMundo');
+    // Cambiar de mundo
+    document.getElementById('toggleMundo').addEventListener('click', () => {
       const body = document.body;
       const logico = document.getElementById('contenidoLogico');
       const ilogico = document.getElementById('contenidoIlogico');
+      const boton = document.getElementById('toggleMundo');
 
-      boton.addEventListener('click', () => {
-        if (body.classList.contains('logico')) {
-          body.classList.remove('logico');
-          body.classList.add('ilogico');
-          logico.style.display = 'none';
-          ilogico.style.display = 'block';
-          ilogico.classList.remove('fade-in');
-          void ilogico.offsetWidth;
-          ilogico.classList.add('fade-in');
-          boton.textContent = 'Cambiar a Mundo Lógico';
-        } else {
-          body.classList.remove('ilogico');
-          body.classList.add('logico');
-          ilogico.style.display = 'none';
-          logico.style.display = 'block';
-          logico.classList.remove('fade-in');
-          void logico.offsetWidth;
-          logico.classList.add('fade-in');
-          boton.textContent = 'Cambiar a Mundo Ilógico';
-        }
-      });
+      if (body.classList.contains('logico')) {
+        body.classList.remove('logico');
+        body.classList.add('ilogico');
+        logico.style.display = 'none';
+        ilogico.style.display = 'block';
+        ilogico.classList.remove('fade-in');
+        void ilogico.offsetWidth;
+        ilogico.classList.add('fade-in');
+        boton.textContent = 'Cambiar a Mundo Lógico';
+      } else {
+        body.classList.remove('ilogico');
+        body.classList.add('logico');
+        ilogico.style.display = 'none';
+        logico.style.display = 'block';
+        logico.classList.remove('fade-in');
+        void logico.offsetWidth;
+        logico.classList.add('fade-in');
+        boton.textContent = 'Cambiar a Mundo Ilógico';
+      }
     });
+
+    // Mostrar respuestas lógicas
+    function mostrarRespuesta(btn) {
+      const respuesta = btn.nextElementSibling;
+      respuesta.classList.toggle('show');
+    }
+
+    // Respuestas absurdas
+    function respuestaAbsurda() {
+      const respuestas = [
+        "Un cuervo usando sombrero.",
+        "Una cucharacha tocando el piano.",
+        "42, pero solo los martes.",
+        "Una taza que habla en francés.",
+        "Tu sombra es tu verdadero yo.",
+        "La respuesta está debajo de tu zapato."
+      ];
+      const random = Math.floor(Math.random() * respuestas.length);
+      document.getElementById('respuestaIlogica').textContent = respuestas[random];
+      document.getElementById('respuestaIlogica').classList.add('show');
+    }
   </script>
 </body>
 </html>
