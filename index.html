@@ -20,6 +20,7 @@
       justify-content: center;
       height: 100vh;
       background-color: #f4f4f4;
+      position: relative;
     }
 
     canvas {
@@ -138,7 +139,6 @@
     // Nuevo laberinto
     const canvas = document.getElementById("laberinto");
     const ctx = canvas.getContext("2d");
-    const tileSize = 30;  // Ajustamos el tamaño de la celda
     const maze = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       [1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
@@ -161,20 +161,25 @@
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
     ];
 
-    const start = { x: 1, y: 1 }; // Inicio del jugador
-    const goal = { x: 30, y: 13 }; // Meta
-    let player = { ...start };
-    let steps = 0;
-    let timer = 0;
-    let interval;
-    
-    // Función para ajustar el tamaño del canvas según el laberinto
-    canvas.width = maze[0].length * tileSize;
-    canvas.height = maze.length * tileSize;
+    let tileSize = 20; // Tamaño de cada celda del laberinto
+
+    // Función para ajustar el tamaño del canvas
+    function resizeCanvas() {
+      const canvasWidth = window.innerWidth;
+      const canvasHeight = window.innerHeight;
+
+      // Calculamos el tamaño de la celda en función del tamaño de la ventana
+      tileSize = Math.min(canvasWidth, canvasHeight) / Math.max(maze[0].length, maze.length);
+
+      canvas.width = maze[0].length * tileSize;
+      canvas.height = maze.length * tileSize;
+      dibujarLaberinto();
+    }
 
     // Función para dibujar el laberinto
     function dibujarLaberinto() {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+
       for (let y = 0; y < maze.length; y++) {
         for (let x = 0; x < maze[y].length; x++) {
           const tile = maze[y][x];
@@ -190,62 +195,12 @@
           }
         }
       }
-      // Dibujar al jugador
-      ctx.fillStyle = "#ff0000";
-      ctx.beginPath();
-      ctx.arc(player.x * tileSize + tileSize / 2, player.y * tileSize + tileSize / 2, tileSize / 4, 0, Math.PI * 2);
-      ctx.fill();
     }
 
-    // Función para mover al jugador
-    function moverJugador(direction) {
-      let newPlayer = { ...player };
-      if (direction === "up") newPlayer.y--;
-      if (direction === "down") newPlayer.y++;
-      if (direction === "left") newPlayer.x--;
-      if (direction === "right") newPlayer.x++;
-
-      if (maze[newPlayer.y] && maze[newPlayer.y][newPlayer.x] !== undefined && maze[newPlayer.y][newPlayer.x] !== 1) {
-        player = newPlayer;
-        steps++;
-        document.getElementById("pasos").textContent = steps;
-      }
-      dibujarLaberinto();
-    }
-
-    // Función para iniciar el cronómetro
-    function iniciarCronometro() {
-      interval = setInterval(() => {
-        timer++;
-        document.getElementById("tiempo").textContent = timer;
-      }, 1000);
-    }
-
-    // Función para detener el cronómetro
-    function detenerCronometro() {
-      clearInterval(interval);
-    }
-
-    // Función para verificar si se ha llegado a la meta
-    function verificarMeta() {
-      if (player.x === goal.x && player.y === goal.y) {
-        detenerCronometro();
-        alert("¡Ganaste el juego en " + steps + " pasos y " + timer + " segundos!");
-      }
-    }
-
-    // Eventos de teclas para mover al jugador
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp") moverJugador("up");
-      if (e.key === "ArrowDown") moverJugador("down");
-      if (e.key === "ArrowLeft") moverJugador("left");
-      if (e.key === "ArrowRight") moverJugador("right");
-      verificarMeta();
-    });
-
-    // Iniciar el juego
-    dibujarLaberinto();
-    iniciarCronometro();
+    // Redibujar el laberinto cuando la ventana se redimensiona
+    window.addEventListener('resize', resizeCanvas);
+    
+    resizeCanvas();
   </script>
 </body>
 </html>
