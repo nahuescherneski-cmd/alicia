@@ -89,7 +89,7 @@
 
   <!-- LABERINTO -->
   <div id="laberintoContainer">
-    <canvas id="laberinto" width="440" height="440"></canvas>
+    <canvas id="laberinto"></canvas>
     <div class="infoPanel">
       <p><strong>Pasos:</strong> <span id="pasos">0</span> | <strong>Tiempo:</strong> <span id="tiempo">0</span> segundos</p>
     </div>
@@ -138,7 +138,7 @@
     // Nuevo laberinto
     const canvas = document.getElementById("laberinto");
     const ctx = canvas.getContext("2d");
-    const tileSize = 40;
+    const tileSize = 30;  // Ajustamos el tamaño de la celda
     const maze = [
       [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
       [1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,1,0,0,0,1,0,1,0,1,0,0,0,1,0,1],
@@ -168,6 +168,10 @@
     let timer = 0;
     let interval;
     
+    // Función para ajustar el tamaño del canvas según el laberinto
+    canvas.width = maze[0].length * tileSize;
+    canvas.height = maze.length * tileSize;
+
     // Función para dibujar el laberinto
     function dibujarLaberinto() {
       ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
