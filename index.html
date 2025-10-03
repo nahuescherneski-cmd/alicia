@@ -38,12 +38,12 @@
     }
 
     .wall {
-      background-color: #2e7d32; /* seto verde oscuro */
+      background-color: #2e7d32;
       border: 1px solid #1b5e20;
     }
 
     .path {
-      background-color: #fce4ec; /* rosa suave */
+      background-color: #fce4ec;
     }
 
     .player {
@@ -75,10 +75,9 @@
 
   <h1>✨ El Laberinto de Alicia ✨</h1>
   <div id="maze"></div>
-  <div id="info">Usa las flechas o W A S D para ayudar a Alicia a encontrar al 🐇 Conejo Blanco</div>
+  <div id="info">Usa flechas o teclas W A S D para ayudar a Alicia a encontrar al 🐇 Conejo Blanco</div>
 
   <script>
-    // Laberinto de 15x15
     const mazeLayout = [
       "###############",
       "#     #     # #",
@@ -116,12 +115,12 @@
 
           if (x === playerX && y === playerY) {
             cell.classList.add("player");
-            cell.textContent = "🧒"; // Alicia
+            cell.textContent = "🧒";
           } else if (char === "#") {
             cell.classList.add("wall");
           } else if (char === "G") {
             cell.classList.add("goal");
-            cell.textContent = "🐇"; // Conejo blanco
+            cell.textContent = "🐇";
           } else {
             cell.classList.add("path");
           }
@@ -150,12 +149,11 @@
 
       if (destination === "G") {
         setTimeout(() => {
-          alert("🌟 ¡Has encontrado al Conejo Blanco! ¡Bien hecho, Alicia!");
-        }, 100);
+          window.location.href = "mundo.html"; // Redirección
+        }, 300);
       }
     }
 
-    // Control por teclado
     document.addEventListener("keydown", (e) => {
       const key = e.key.toLowerCase();
 
@@ -169,11 +167,12 @@
   </script>
 
   <div id="footer">
-    "¡Cuidado con la Reina de Corazones!" - dijo el Sombrerero 🎩
+    "Nada es lo que parece..." — Alicia 🐛
   </div>
 
 </body>
 </html>
+
 
 
 
