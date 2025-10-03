@@ -13,8 +13,6 @@
     .hud{display:flex;gap:12px;margin:10px 0;align-items:center}
     .hud div{background:rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px}
     .controls{font-size:13px;color:#cfeefc;margin-top:10px}
-
-    /* Modal / pregunta */
     .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,10,0.6);z-index:50}
     .card{background:#071428;color:#fff;padding:18px;border-radius:12px;min-width:320px;max-width:720px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
     .card h2{margin:0 0 12px}
@@ -23,8 +21,6 @@
     .option:hover{background:rgba(255,255,255,0.06)}
     .small{font-size:13px;color:#b8d8f0}
     footer{margin-top:12px;font-size:13px;color:#a8cfe6}
-
-    /* mobile adjustments */
     @media (max-width:520px){canvas{width:320px;height:320px}} 
   </style>
 </head>
@@ -50,11 +46,10 @@
   </div>
 
   <script>
-  // --- Configuración del juego ---
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
-  const TILE = 28; // tamaño del tile
-  const ROWS = 20; // 20x20 grid (560/28 = 20)
+  const TILE = 28; 
+  const ROWS = 20; 
   const COLS = 20;
 
   let scoreEl = document.getElementById('score');
@@ -64,45 +59,44 @@
   const qTitle = document.getElementById('q-title');
   const optionsDiv = document.getElementById('options');
 
-  // Preguntas de ejemplo (relacionadas con Alicia en el País de las Maravillas)
   const questions = [
     {q:'¿Cómo se llama la protagonista?', a:['Alicia','Ariana','Marta','María'], correct:0},
     {q:'¿Qué personaje siempre llega tarde?', a:['El Sombrerero Loco','El Conejo Blanco','La Reina de Corazones','El Gato de Cheshire'], correct:1},
     {q:'¿Qué grita la Reina?', a:['¡Corten la torta!','¡Que le corten la cabeza!','¡Fuera de aquí!','¡Viva la reina!'], correct:1},
     {q:'¿Quién sonríe y desaparece dejando solo su sonrisa?', a:['La Oruga','El Conejo','El Gato de Cheshire','Alicia'], correct:2},
-    {q:'¿Qué come Alicia para cambiar de tamaño?', a:['Seta','Té','Pastel','Manzana'], correct:0}
+    {q:'¿Qué come Alicia para cambiar de tamaño?', a:['Seta','Té','Pastel','Manzana'], correct:0},
+    {q:'¿Qué animal organiza la carrera loca?', a:['El Pato','El Dodo','El Loro','El Conejo'], correct:1},
+    {q:'¿Quién celebra un “no cumpleaños”?', a:['El Gato de Cheshire','El Sombrerero Loco y la Liebre','La Reina','El Conejo Blanco'], correct:1},
+    {q:'¿Qué fuma la oruga azul?', a:['Cigarro','Pipa de agua','Cachimba','Narguile'], correct:3},
+    {q:'¿De qué color son las rosas que pintan los jardineros?', a:['Rojas','Blancas','Negras','Azules'], correct:1},
+    {q:'¿Cómo se llama el gato que ayuda a Alicia?', a:['Michi','Felix','Cheshire','Tom'], correct:2}
   ];
 
-  // Mapa simple: 0=pellet, 1=pared
   const map = [];
 
   function createMap(){
-    // simple laberinto simétrico
     for(let r=0;r<ROWS;r++){
       map[r]=[];
       for(let c=0;c<COLS;c++){
-        // Bordes son paredes
         if(r===0||c===0||r===ROWS-1||c===COLS-1) map[r][c]=1;
-        else if((r%2===0)&&(c%2===0)) map[r][c]=1; // rejilla de paredes
-        else map[r][c]=0; // pellet
+        else if((r%2===0)&&(c%2===0)) map[r][c]=1; 
+        else if(Math.random()<0.2) map[r][c]=1; // más paredes aleatorias para hacerlo cerrado
+        else map[r][c]=0;
       }
     }
-    // Pasillos para jugabilidad básica
     for(let i=2;i<ROWS-2;i++){
       map[i][Math.floor(COLS/2)]=0;
     }
-    // Limpiar zona central para spawn
     for(let r=8;r<12;r++)for(let c=8;c<12;c++)map[r][c]=0;
   }
 
   createMap();
 
-  // Entidades
-  const player = {x:1,y:1,dir:{x:0,y:0},nextDir:null,radius:12,color:'#f8c8e6'}; // Alicia
+  const player = {x:1,y:1,dir:{x:0,y:0},nextDir:null,radius:12,color:'#f8c8e6'}; 
   const ghosts = [];
 
   function addGhost(x,y,color){
-    ghosts.push({x,y,dir:{x:0,y:0},speed:0.06,color,fright:false});
+    ghosts.push({x,y,dir:{x:0,y:0},speed:0.06,color});
   }
 
   addGhost(COLS-2,1,'#ff7aa2');
@@ -117,7 +111,6 @@
 
   pelletsRemaining = countPellets();
 
-  // Input
   const keys = {};
   window.addEventListener('keydown',e=>{keys[e.key]=true;handleKey(e.key);});
   window.addEventListener('keyup',e=>{keys[e.key]=false;});
@@ -129,32 +122,25 @@
     if(['ArrowRight','d','D'].includes(k)) player.nextDir={x:1,y:0};
   }
 
-  // Utilities
   function canMove(x,y){
-    // check collision with walls
     if(x<0||y<0||x>=COLS||y>=ROWS) return false;
     return map[Math.floor(y)][Math.floor(x)]!==1;
   }
 
   function updatePlayer(dt){
-    // Convert position to tile coordinates
-    const speed = 6.0; // tiles per second
-    // try nextDir if available AND aligned to tile center
+    const speed = 6.0; 
     if(player.nextDir){
-      const nx = player.x + player.nextDir.x*0.2; // small test
+      const nx = player.x + player.nextDir.x*0.2; 
       const ny = player.y + player.nextDir.y*0.2;
       if(canMove(Math.floor(nx+0.5), Math.floor(ny+0.5))){
         player.dir = player.nextDir; player.nextDir=null;
       }
     }
-    // move
     const newX = player.x + player.dir.x * speed * dt;
     const newY = player.y + player.dir.y * speed * dt;
-    // collision: check tile center
     if(canMove(Math.floor(newX+0.5), Math.floor(newY+0.5))){
       player.x=newX; player.y=newY;
     }
-    // Collect pellet if on a pellet tile
     const px=Math.floor(player.x+0.5), py=Math.floor(player.y+0.5);
     if(map[py] && map[py][px]===0){
       map[py][px]=2; score+=10; pelletsRemaining--; scoreEl.textContent=score; 
@@ -174,18 +160,14 @@
 
   function updateGhosts(dt){
     ghosts.forEach(g=>{
-      // simple random movement with small bias towards player
-      if(Math.random()<0.02) g.dir = [{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}][Math.floor(Math.random()*4)];
-      // bias towards player sometimes
-      if(Math.random()<0.06){
-        const dx = Math.sign(player.x - g.x); const dy = Math.sign(player.y - g.y);
-        g.dir = (Math.random()<0.5)? {x:dx,y:0} : {x:0,y:dy};
-      }
-      const gs = 3.2 + level*0.6;
-      const nx = g.x + g.dir.x * gs * dt;
-      const ny = g.y + g.dir.y * gs * dt;
+      const dx = player.x - g.x;
+      const dy = player.y - g.y;
+      const mag = Math.sqrt(dx*dx+dy*dy)||1;
+      const dir = {x:dx/mag,y:dy/mag};
+      const gs = 2.8 + level*0.5;
+      const nx = g.x + dir.x * gs * dt;
+      const ny = g.y + dir.y * gs * dt;
       if(canMove(Math.floor(nx+0.5), Math.floor(ny+0.5))){ g.x=nx; g.y=ny; }
-      else g.dir = {x: -g.dir.x, y: -g.dir.y};
     });
   }
 
@@ -195,47 +177,37 @@
       const dx = (g.x - player.x);
       const dy = (g.y - player.y);
       const dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < 0.6){ // collision threshold
+      if(dist < 0.6){
         return true;
       }
     }
     return false;
   }
 
-  // Draw
   function draw(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    // draw map
     for(let r=0;r<ROWS;r++){
       for(let c=0;c<COLS;c++){
         const x=c*TILE, y=r*TILE;
         if(map[r][c]===1){
-          // pared
           ctx.fillStyle = '#223044'; ctx.fillRect(x+2,y+2,TILE-4,TILE-4);
         } else if(map[r][c]===0){
-          // pellet
           ctx.beginPath(); ctx.fillStyle='rgba(255,210,150,0.95)'; ctx.arc(x+TILE/2,y+TILE/2,4,0,Math.PI*2); ctx.fill();
         }
       }
     }
-    // draw player (Alicia) as circle with a little bow
     const px = player.x * TILE; const py = player.y * TILE;
     ctx.beginPath(); ctx.fillStyle=player.color; ctx.arc(px,py,player.radius,0,Math.PI*2); ctx.fill();
-    // eye
     ctx.beginPath(); ctx.fillStyle='#4b2d6b'; ctx.arc(px+6,py-4,3,0,Math.PI*2); ctx.fill();
-    // draw ghosts
     ghosts.forEach(g=>{
       const gx = g.x * TILE; const gy = g.y * TILE;
-      // body
       ctx.beginPath(); ctx.fillStyle = g.color; ctx.arc(gx,gy,14,Math.PI,0); ctx.lineTo(gx+14,gy+12); ctx.lineTo(gx-14,gy+12); ctx.closePath(); ctx.fill();
-      // eyes
       ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(gx-6,gy-2,4,0,Math.PI*2); ctx.arc(gx+6,gy-2,4,0,Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.fillStyle='#000'; ctx.arc(gx-6,gy-2,2,0,Math.PI*2); ctx.arc(gx+6,gy-2,2,0,Math.PI*2); ctx.fill();
     });
   }
 
-  // Game loop
-  let last = performance.now(); let paused=false; let awaitingQuestion=false; let questionResolve=null;
+  let last = performance.now(); let paused=false; let awaitingQuestion=false; 
 
   function gameLoop(t){
     const dt = Math.min(0.05,(t-last)/1000); last=t; if(!paused){
@@ -247,14 +219,13 @@
   }
 
   function handlePlayerDeath(){
-    if(awaitingQuestion) return; // already handling
+    if(awaitingQuestion) return; 
     paused=true; awaitingQuestion=true;
     showQuestion().then(correct=>{
       awaitingQuestion=false;
       if(correct){
-        // give temporary invulnerability and respawn at start
         player.x=1;player.y=1;player.dir={x:0,y:0};
-        paused=false; // continue playing
+        paused=false;
       } else {
         lives--; livesEl.textContent=lives; 
         if(lives<=0){ resetGame(); }
@@ -269,10 +240,8 @@
     score=0;scoreEl.textContent=score; lives=3;livesEl.textContent=lives; level=1;levelEl.textContent=level; resetLevel(); paused=false;
   }
 
-  // Pregunta modal logic
   function showQuestion(){
     return new Promise(resolve=>{
-      // pick random question
       const q = questions[Math.floor(Math.random()*questions.length)];
       qTitle.textContent = q.q; optionsDiv.innerHTML=''; overlay.style.display='flex';
       q.a.forEach((opt,i)=>{
@@ -280,7 +249,6 @@
           overlay.style.display='none';
           const correct = (i===q.correct);
           if(correct){
-            // give points bonus
             score+=50; scoreEl.textContent=score;
           }
           resolve(correct);
@@ -289,14 +257,8 @@
     });
   }
 
-  // Start game
   resetGame(); requestAnimationFrame(gameLoop);
-
-  // small touch: allow clicking canvas to pause/resume
   canvas.addEventListener('click',()=>{paused=!paused});
-
-  // Helpful: show basic instructions in console
-  console.log('Pac‑Alicia listo. Flechas/WASD para mover. Al perder responde la pregunta para continuar.');
   </script>
 </body>
 </html>
