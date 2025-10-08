@@ -2,237 +2,227 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Alicia en el País de las Maravillas</title>
+  <title>Alicia en el País de las Maravillas — Juegos</title>
   <style>
-    body {
-      font-family: 'Georgia', serif;
-      margin: 0;
-      padding: 0;
-      background-color: #fefae0;
-    }
+    body { font-family: Georgia, serif; background: #fefae0; margin: 20px; }
+    h2 { color: #4a148c; }
 
-    header {
-      background-color: #7ec8e3;
-      color: white;
-      padding: 20px;
-      text-align: center;
+    /* Memoria */
+    .memoria-container {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      grid-gap: 10px;
+      justify-content: center;
+      margin-bottom: 40px;
     }
-
-    section {
-      padding: 40px;
-      text-align: center;
+    .card {
+      width: 100px;
+      height: 100px;
+      background: #ffa;
+      border: 2px solid #6a1b9a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
     }
-
-    img {
-      width: 70%;
-      max-width: 500px;
-      margin: 20px 0;
-      border-radius: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    }
-
-    .logico {
-      background-color: #e0f7fa;
+    .card.flipped, .card.matched {
+      background: #e0f7fa;
       color: #004d40;
     }
-
-    .ilogico {
-      background-color: #ffebf0;
+    .card.hidden {
+      background: #6a1b9a;
       color: #6a1b9a;
-      font-style: italic;
-      animation: parpadeo 4s infinite alternate;
     }
 
-    .frase-ilogica {
-      font-weight: bold;
-      animation: giroLoco 6s infinite linear;
+    /* Laberinto */
+    #maze {
+      border: 3px solid #4a148c;
+      margin: 0 auto;
+      background: white;
     }
-
-    .dato-curioso {
-      background-color: #fff9c4;
-      border-left: 6px solid #fdd835;
-      padding: 15px 20px;
-      margin: 30px auto 10px;
-      max-width: 600px;
-      text-align: left;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      font-style: normal;
-      font-size: 1rem;
+    .cell {
+      width: 30px;
+      height: 30px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
     }
-
-    .juego {
-      background-color: #e1bee7;
-      padding: 40px;
+    .wall {
+      background: #6a1b9a;
     }
-
-    .juego h2 {
-      color: #4a148c;
+    .player {
+      background: #ffeb3b;
     }
-
-    .juego button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #ba68c8;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .juego button:hover {
-      background-color: #ab47bc;
-    }
-
-    .resultado {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-
-    @keyframes parpadeo {
-      0% { background-color: #ffe0f0; }
-      100% { background-color: #ffccf5; }
-    }
-
-    @keyframes giroLoco {
-      0% { transform: rotate(0deg); }
-      50% { transform: rotate(2deg); }
-      100% { transform: rotate(-2deg); }
-    }
-
-    footer {
-      background-color: #7ec8e3;
-      color: white;
-      padding: 10px;
-      text-align: center;
+    .exit {
+      background: #4caf50;
     }
   </style>
 </head>
 <body>
 
-  <!-- Música de fondo -->
-  <audio autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    Tu navegador no soporta audio HTML5.
-  </audio>
+  <h2>Juego de Memoria</h2>
+  <div id="memoria" class="memoria-container"></div>
+  <div id="memoriaResultado"></div>
 
-  <header>
-    <h1>Alicia en el País de las Maravillas</h1>
-    <p>Un viaje entre el mundo lógico y el mundo ilógico</p>
-  </header>
-
-  <!-- MUNDO LÓGICO -->
-  <section class="logico">
-    <h2>🌿 Mundo Lógico</h2>
-    <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia en el mundo lógico">
-    <p>
-      En el mundo lógico, todo tiene una causa y una consecuencia.
-      Alicia sigue reglas, entiende el tiempo, y vive en un entorno estructurado y coherente.
-    </p>
-    <ul>
-      <li>El té se toma a las cinco</li>
-      <li>Los relojes funcionan bien</li>
-      <li>Las palabras significan lo que deben</li>
-    </ul>
-
-    <div class="dato-curioso">
-      <strong>🎬 Dato curioso:</strong> En la película animada de Disney (1951), Alicia representa el pensamiento racional frente al caos. Esta parte "lógica" refleja su origen en la Inglaterra victoriana, donde se esperaba que los niños siguieran estrictas normas sociales.
-    </div>
-  </section>
-
-  <!-- MUNDO ILÓGICO -->
-  <section class="ilogico">
-    <h2>🎩 Mundo Ilógico</h2>
-    <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia en el mundo ilógico">
-    <p>
-      Aquí, el conejo llega tarde, las flores hablan y el gato desaparece sonriendo.
-      Nada tiene sentido, y las reglas cambian a cada momento.
-    </p>
-    <p class="frase-ilogica">“¿Quién eres tú?” preguntó la oruga mientras fumaba en espiral.</p>
-    <p class="frase-ilogica">“¡Córtenle la cabeza!” gritó la Reina sin razón aparente.</p>
-    <p class="frase-ilogica">El reloj corre hacia atrás y el tiempo toma el té.</p>
-
-    <div class="dato-curioso">
-      <strong>🧠 Dato curioso:</strong> La famosa frase “¿Por qué un cuervo se parece a un escritorio?” del Sombrerero Loco fue escrita sin respuesta intencionalmente. Lewis Carroll explicó después que era solo para confundir… ¡como todo en el mundo ilógico!
-    </div>
-  </section>
-
-  <!-- JUEGO -->
-  <section class="juego">
-    <h2>🎮 ¿Quién dijo esta frase?</h2>
-    <p id="frase"></p>
-    <div id="opciones"></div>
-    <div class="resultado" id="resultado"></div>
-  </section>
-
-  <footer>
-    <p>&copy; 2025 - Alicia en el País de las Maravillas</p>
-  </footer>
+  <h2>Labyrinth: Ayuda a Alicia a salir</h2>
+  <canvas id="maze" width="300" height="300"></canvas>
+  <p>Usa las teclas de flecha para mover a Alicia (el cuadro amarillo) hasta la salida (verde).</p>
 
   <script>
-    const frases = [
-      {
-        frase: "¿Quién eres tú?",
-        personaje: "La Oruga"
-      },
-      {
-        frase: "¡Córtenle la cabeza!",
-        personaje: "Reina de Corazones"
-      },
-      {
-        frase: "Siempre es la hora del té.",
-        personaje: "Sombrerero Loco"
-      },
-      {
-        frase: "Me temo que estás completamente loco. Pero te diré un secreto: las mejores personas lo están.",
-        personaje: "Gato de Cheshire"
-      },
-      {
-        frase: "¡Oh, cielos! ¡Voy a llegar tarde!",
-        personaje: "Conejo Blanco"
-      },
-      {
-        frase: "Esto es imposible. — Solo si crees que lo es.",
-        personaje: "Alicia"
-      }
+    /* ======= Juego de Memoria ======= */
+    const memoriaContainer = document.getElementById('memoria');
+    const memoriaResultado = document.getElementById('memoriaResultado');
+
+    const items = [
+      'Sombrerero','Sombrerero',
+      'Reina','Reina',
+      'Gato','Gato',
+      'Conejo','Conejo'
     ];
+    let shuffled = items.sort(() => 0.5 - Math.random());
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let matches = 0;
 
-    const opciones = ["Alicia", "Reina de Corazones", "Sombrerero Loco", "Gato de Cheshire", "Conejo Blanco", "La Oruga"];
-
-    const fraseElem = document.getElementById("frase");
-    const opcionesElem = document.getElementById("opciones");
-    const resultadoElem = document.getElementById("resultado");
-
-    let fraseActual;
-
-    function mostrarFrase() {
-      resultadoElem.textContent = "";
-      fraseActual = frases[Math.floor(Math.random() * frases.length)];
-      fraseElem.textContent = `"${fraseActual.frase}"`;
-      opcionesElem.innerHTML = "";
-      opciones.forEach(personaje => {
-        const btn = document.createElement("button");
-        btn.textContent = personaje;
-        btn.onclick = () => verificarRespuesta(personaje);
-        opcionesElem.appendChild(btn);
+    function crearTablero() {
+      memoriaContainer.innerHTML = '';
+      shuffled.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.classList.add('card', 'hidden');
+        card.dataset.name = item;
+        card.innerText = item;
+        card.addEventListener('click', flipCard);
+        memoriaContainer.appendChild(card);
       });
     }
 
-    function verificarRespuesta(seleccionado) {
-      if (seleccionado === fraseActual.personaje) {
-        resultadoElem.textContent = "✅ ¡Correcto!";
-        resultadoElem.style.color = "green";
-      } else {
-        resultadoElem.textContent = `❌ Incorrecto. Era: ${fraseActual.personaje}`;
-        resultadoElem.style.color = "red";
+    function flipCard() {
+      if (lockBoard) return;
+      if (this === firstCard) return;
+
+      this.classList.remove('hidden');
+      this.classList.add('flipped');
+
+      if (!firstCard) {
+        firstCard = this;
+        return;
       }
-      setTimeout(mostrarFrase, 2500);
+      secondCard = this;
+      lockBoard = true;
+
+      if (firstCard.dataset.name === secondCard.dataset.name) {
+        // acertaron
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        resetBoard();
+        matches++;
+        if (matches === items.length / 2) {
+          memoriaResultado.innerText = '¡Ganaste la memoria!';
+        }
+      } else {
+        // no coincide
+        setTimeout(() => {
+          firstCard.classList.add('hidden');
+          secondCard.classList.add('hidden');
+          firstCard.classList.remove('flipped');
+          secondCard.classList.remove('flipped');
+          resetBoard();
+        }, 1000);
+      }
     }
 
-    // Iniciar el juego al cargar
-    mostrarFrase();
+    function resetBoard() {
+      [firstCard, secondCard] = [null, null];
+      lockBoard = false;
+    }
+
+    crearTablero();
+
+    /* ======= Laberinto ======= */
+    const canvas = document.getElementById('maze');
+    const ctx = canvas.getContext('2d');
+    const cols = 10, rows = 10;
+    const cellSize = 30;
+    let maze = [];
+    let player = { x: 0, y: 0 };
+    const exit = { x: cols - 1, y: rows - 1 };
+
+    function initMaze() {
+      // Simple laberinto con algunos muros
+      for (let y = 0; y < rows; y++) {
+        maze[y] = [];
+        for (let x = 0; x < cols; x++) {
+          maze[y][x] = 0; // 0 = camino
+        }
+      }
+      // Añadir muros manuales para ejemplo
+      for (let i = 0; i < cols; i++) {
+        maze[3][i] = 1;
+        maze[6][i] = 1;
+      }
+      maze[3][5] = 0;
+      maze[6][2] = 0;
+    }
+
+    function drawMaze() {
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (maze[y][x] === 1) {
+            ctx.fillStyle = '#6a1b9a';
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          } else {
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+          // dibujar salida
+          if (x === exit.x && y === exit.y) {
+            ctx.fillStyle = '#4caf50';
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+      // dibujar jugador
+      ctx.fillStyle = '#ffeb3b';
+      ctx.fillRect(player.x * cellSize, player.y * cellSize, cellSize, cellSize);
+    }
+
+    function movePlayer(dx, dy) {
+      const newX = player.x + dx;
+      const newY = player.y + dy;
+      if (newX < 0 || newX >= cols || newY < 0 || newY >= rows) return;
+      if (maze[newY][newX] === 1) return;
+      player.x = newX;
+      player.y = newY;
+      drawMaze();
+      checkExit();
+    }
+
+    function checkExit() {
+      if (player.x === exit.x && player.y === exit.y) {
+        setTimeout(() => {
+          alert('¡Alicia ha salido del laberinto!');
+          player.x = 0;
+          player.y = 0;
+          drawMaze();
+        }, 100);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp': movePlayer(0, -1); break;
+        case 'ArrowDown': movePlayer(0, 1); break;
+        case 'ArrowLeft': movePlayer(-1, 0); break;
+        case 'ArrowRight': movePlayer(1, 0); break;
+      }
+    });
+
+    initMaze();
+    drawMaze();
+
   </script>
 
 </body>
