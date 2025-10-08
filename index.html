@@ -2,79 +2,55 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alicia en el País de las Maravillas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Alicia - Laberintos y Acertijos</title>
 <style>
-  body {
-    background: linear-gradient(to bottom, #a8e6cf, #dcedc1);
-    font-family: 'Trebuchet MS', sans-serif;
-    text-align: center;
-    overflow: hidden;
-  }
-  h1 { margin-top: 20px; color: #333; }
-  .menu, .mundo, .juegos, .laberinto-container { display: none; }
-  .activo { display: block; }
-
-  button {
-    padding: 12px 20px;
-    margin: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 12px;
-    border: none;
-    background: #ffb6b9;
-    transition: transform 0.3s, background 0.3s;
-  }
-  button:hover { background: #ff8c94; transform: scale(1.1); }
-
-  .laberinto {
-    display: grid;
-    margin: 20px auto;
-    background: #222;
-    border: 5px solid #555;
-    gap: 2px;
-  }
-  .celda {
-    width: 25px;
-    height: 25px;
-    background: #eee;
-  }
-  .pared { background: #333; }
-  .jugador { background: #4CAF50; }
-  .meta { background: gold; }
-
-  .volver { background: #b5ead7; margin-top: 20px; }
+  body { background: linear-gradient(to bottom,#a8e6cf,#dcedc1); font-family: 'Trebuchet MS', sans-serif; text-align:center; overflow:hidden; }
+  h1{ margin-top:20px;color:#333; }
+  .menu,.mundo,.juegos,.laberinto-container,.acertijo-container{ display:none; }
+  .activo{ display:block; }
+  button{ padding:12px 20px; margin:10px; font-size:18px; cursor:pointer; border-radius:12px; border:none; background:#ffb6b9; transition:transform .25s; }
+  button:hover{ transform:scale(1.06); background:#ff8c94; }
+  .laberinto{ display:grid; margin:18px auto; background:#222; border:5px solid #555; gap:2px; }
+  .celda{ width:25px; height:25px; background:#eee; }
+  .pared{ background:#333; }
+  .jugador{ background:#4CAF50; }
+  .meta{ background:gold; }
+  .volver{ background:#b5ead7; margin-top:20px; }
+  .pregunta { font-size: 20px; margin-bottom: 15px; }
+  .opcion { display:block; width:80%; max-width:400px; margin:8px auto; }
 </style>
 </head>
 <body>
-
 <h1>🌟 Alicia en el País de las Maravillas 🌟</h1>
 
-<!-- 🏠 MENÚ PRINCIPAL -->
-<div class="menu activo" id="menu">
+<!-- MENÚ -->
+<div id="menu" class="menu activo">
   <button onclick="mostrarSeccion('mundoLogico')">🌿 Mundo Lógico</button>
   <button onclick="mostrarSeccion('mundoIlogico')">🌀 Mundo Ilógico</button>
   <button onclick="mostrarSeccion('juegos')">🎮 Juegos</button>
 </div>
 
-<!-- 🌿 MUNDO LÓGICO -->
-<div class="mundo" id="mundoLogico">
+<!-- MUNDO LÓGICO -->
+<div id="mundoLogico" class="mundo">
   <h2>🌿 Mundo Lógico</h2>
-  <p>Aquí todo tiene sentido… o casi 😉</p>
-  <p><b>Dato curioso:</b> El sombrerero loco se basa en un personaje real del siglo XIX.</p>
+  <p>Aquí todo tiene sentido…</p>
+  <p><b>Dato curioso:</b> Alicia representa la razón frente al caos.</p>
+  <button onclick="iniciarAcertijo('logico')">🧠 Iniciar Acertijo</button>
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🌀 MUNDO ILÓGICO -->
-<div class="mundo" id="mundoIlogico">
+<!-- MUNDO ILÓGICO -->
+<div id="mundoIlogico" class="mundo">
   <h2>🌀 Mundo Ilógico</h2>
-  <p>“El tiempo corre al revés y las flores hablan.” 🌸⏳</p>
-  <p><b>Dato curioso:</b> Lewis Carroll era matemático, por eso hay acertijos escondidos en el libro.</p>
+  <p>Las reglas cambian aquí…</p>
+  <p><b>Dato curioso:</b> Lewis Carroll escondía acertijos matemáticos en sus cuentos.</p>
+  <button onclick="iniciarAcertijo('ilogico')">🤪 Iniciar Acertijo</button>
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🎮 JUEGOS -->
-<div class="juegos" id="juegos">
+<!-- JUEGOS -->
+<div id="juegos" class="juegos">
   <h2>🎮 Juegos</h2>
   <button onclick="iniciarLaberinto('facil')">Laberinto Fácil</button>
   <button onclick="iniciarLaberinto('medio')">Laberinto Medio</button>
@@ -83,94 +59,160 @@
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🧭 LABERINTO -->
-<div class="laberinto-container" id="laberintoContainer">
+<!-- LABERINTO -->
+<div id="laberintoContainer" class="laberinto-container">
   <h2 id="tituloLaberinto"></h2>
   <div id="laberinto" class="laberinto"></div>
   <button class="volver" onclick="mostrarSeccion('juegos')">Volver a Juegos</button>
 </div>
 
-<script>
-let jugador = { x: 0, y: 0 };
-let meta = { x: 0, y: 0 };
-let mapa = [];
-let tamaño = 10;
+<!-- ACERTIJOS -->
+<div id="acertijoContainer" class="acertijo-container">
+  <h2>🤔 Acertijo</h2>
+  <p id="pregunta" class="pregunta"></p>
+  <div id="opciones"></div>
+  <button class="volver" onclick="mostrarSeccion('menu')">Volver</button>
+</div>
 
-function mostrarSeccion(id) {
-  document.querySelectorAll('.menu, .mundo, .juegos, .laberinto-container')
-    .forEach(s => s.classList.remove('activo'));
+<script>
+function mostrarSeccion(id){
+  document.querySelectorAll('.menu,.mundo,.juegos,.laberinto-container,.acertijo-container')
+    .forEach(s=>s.classList.remove('activo'));
   document.getElementById(id).classList.add('activo');
 }
 
-function generarLaberinto(nivel) {
-  if(nivel === 'facil') tamaño = 10;
-  if(nivel === 'medio') tamaño = 15;
-  if(nivel === 'dificil') tamaño = 20;
-  if(nivel === 'imposible') tamaño = 25;
+/* ----- Acertijos ----- */
+const acertijosLogicos = [
+  { pregunta: "Si tengo 5 manzanas y me como 2, ¿cuántas me quedan?", opciones:["2","3","5","7"], correcta:"3" },
+  { pregunta: "¿Qué número sigue en la secuencia? 2, 4, 6, 8, ...", opciones:["9","10","12","6"], correcta:"10" },
+  { pregunta: "Si hoy es martes, ¿qué día fue hace 2 días?", opciones:["Domingo","Lunes","Sábado","Viernes"], correcta:"Domingo" }
+];
 
-  mapa = Array.from({ length: tamaño }, () =>
-    Array.from({ length: tamaño }, () => Math.random() < 0.3 ? 1 : 0)
-  );
+const acertijosIlogicos = [
+  { pregunta: "¿Qué le dice un sombrero a otro?", opciones:["¡Qué cabeza tienes!","Vamos a pasear","Nada, no hablan","Sombrerito feliz"], correcta:"¡Qué cabeza tienes!" },
+  { pregunta: "¿Cuántas cucharas hacen falta para llenar un sombrero mágico?", opciones:["Ninguna","Tres","Mil","Depende de la luna"], correcta:"Depende de la luna" },
+  { pregunta: "Si un conejo corre hacia atrás, ¿a dónde va?", opciones:["A su madriguera","Al pasado","A ningún lado","Hacia adelante"], correcta:"Al pasado" }
+];
 
-  // 🟢 Posición inicial y meta garantizadas como camino
-  jugador = { x: 0, y: 0 };
-  meta = { x: tamaño - 1, y: tamaño - 1 };
-  mapa[jugador.y][jugador.x] = 0;
-  mapa[meta.y][meta.x] = 0;
-}
-
-function dibujarLaberinto() {
-  const contenedor = document.getElementById('laberinto');
-  contenedor.innerHTML = '';
-  contenedor.style.gridTemplateColumns = `repeat(${tamaño}, 25px)`;
-
-  mapa.forEach((fila, y) => {
-    fila.forEach((celda, x) => {
-      const div = document.createElement('div');
-      div.classList.add('celda');
-      if (celda === 1) div.classList.add('pared');
-      if (jugador.x === x && jugador.y === y) div.classList.add('jugador');
-      if (meta.x === x && meta.y === y) div.classList.add('meta');
-      contenedor.appendChild(div);
-    });
+function iniciarAcertijo(tipo){
+  const lista = tipo === 'logico' ? acertijosLogicos : acertijosIlogicos;
+  const r = lista[Math.floor(Math.random()*lista.length)];
+  document.getElementById('pregunta').textContent = r.pregunta;
+  const opcionesDiv = document.getElementById('opciones');
+  opcionesDiv.innerHTML = '';
+  r.opciones.forEach(op=>{
+    const b = document.createElement('button');
+    b.textContent = op;
+    b.className = 'opcion';
+    b.onclick = () => {
+      if(op === r.correcta){
+        b.style.background = '#90ee90';
+        setTimeout(()=>{
+          alert('✅ ¡Correcto!');
+          mostrarSeccion('menu');
+        },600);
+      } else {
+        b.style.background = '#ff6961';
+        setTimeout(()=>{
+          alert('❌ Incorrecto, intenta de nuevo');
+          iniciarAcertijo(tipo);
+        },600);
+      }
+    };
+    opcionesDiv.appendChild(b);
   });
+  mostrarSeccion('acertijoContainer');
 }
 
-function iniciarLaberinto(nivel) {
+/* ----- LABERINTO ----- */
+let jugador = { x:0, y:0 };
+let meta = { x:0, y:0 };
+let mapa = [];
+let tamaño = 10;
+
+function generarLaberinto(nivel){
+  tamaño = (nivel==='facil')?10:(nivel==='medio')?15:(nivel==='dificil')?20:25;
+  const prob = (nivel==='facil')?0.18:(nivel==='medio')?0.28:(nivel==='dificil')?0.36:0.46;
+  mapa = Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
+  jugador = {x:0,y:0}; meta = {x:tamaño-1,y:tamaño-1};
+  mapa[0][0]=0; mapa[meta.y][meta.x]=0;
+  if(!pathExists()) carveGuaranteedPath();
+}
+
+function pathExists(){
+  const vis = Array.from({length:tamaño},()=>Array(tamaño).fill(false));
+  const q=[[0,0]], dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+  vis[0][0]=true;
+  while(q.length){
+    const [cx,cy]=q.shift();
+    if(cx===meta.x&&cy===meta.y)return true;
+    for(const [dx,dy] of dirs){
+      const nx=cx+dx,ny=cy+dy;
+      if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&!vis[ny][nx]&&mapa[ny][nx]===0){
+        vis[ny][nx]=true; q.push([nx,ny]);
+      }
+    }
+  }
+  return false;
+}
+
+function carveGuaranteedPath(){
+  let cx=0,cy=0;
+  while(cx!==meta.x||cy!==meta.y){
+    if(Math.random()<0.5&&cx<meta.x)cx++;else if(cy<meta.y)cy++;
+    mapa[cy][cx]=0;
+    if(Math.random()<0.3){
+      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+      const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)];
+      const nx=cx+dx,ny=cy+dy;
+      if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño) mapa[ny][nx]=0;
+    }
+  }
+}
+
+function dibujarLaberinto(){
+  const cont=document.getElementById('laberinto');
+  cont.innerHTML='';
+  const px=Math.max(12,Math.floor(Math.min(window.innerWidth-40,window.innerHeight-200)/tamaño));
+  cont.style.gridTemplateColumns=`repeat(${tamaño},${px}px)`;
+  for(let y=0;y<tamaño;y++){
+    for(let x=0;x<tamaño;x++){
+      const d=document.createElement('div');
+      d.className='celda';
+      if(mapa[y][x]===1)d.classList.add('pared');
+      if(jugador.x===x&&jugador.y===y)d.classList.add('jugador');
+      if(meta.x===x&&meta.y===y)d.classList.add('meta');
+      cont.appendChild(d);
+    }
+  }
+}
+
+function iniciarLaberinto(nivel){
   generarLaberinto(nivel);
-  document.getElementById('tituloLaberinto').textContent = 
-    `🧭 Nivel: ${nivel.toUpperCase()}`;
+  document.getElementById('tituloLaberinto').textContent=`🧭 Nivel: ${nivel.toUpperCase()}`;
+  jugador={x:0,y:0};
   dibujarLaberinto();
   mostrarSeccion('laberintoContainer');
 }
 
-// 🕹️ Movimiento con flechas
-document.addEventListener('keydown', e => {
-  if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
-  e.preventDefault(); // ✨ evita scroll
-
-  let nuevoX = jugador.x;
-  let nuevoY = jugador.y;
-
-  if (e.key === 'ArrowUp') nuevoY--;
-  if (e.key === 'ArrowDown') nuevoY++;
-  if (e.key === 'ArrowLeft') nuevoX--;
-  if (e.key === 'ArrowRight') nuevoX++;
-
-  // Validar límites y paredes
-  if (nuevoX >= 0 && nuevoX < tamaño && nuevoY >= 0 && nuevoY < tamaño && mapa[nuevoY][nuevoX] === 0) {
-    jugador.x = nuevoX;
-    jugador.y = nuevoY;
+document.addEventListener('keydown',(e)=>{
+  if(!document.getElementById('laberintoContainer').classList.contains('activo'))return;
+  const k=e.key; let nx=jugador.x, ny=jugador.y;
+  if(k==='ArrowUp')ny--; if(k==='ArrowDown')ny++;
+  if(k==='ArrowLeft')nx--; if(k==='ArrowRight')nx++;
+  if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&mapa[ny][nx]===0){
+    jugador.x=nx;jugador.y=ny;
     dibujarLaberinto();
-
-    if (jugador.x === meta.x && jugador.y === meta.y) {
+    if(nx===meta.x&&ny===meta.y){
       setTimeout(()=>{
         alert('🎉 ¡Nivel completado!');
         mostrarSeccion('juegos');
-      },100);
+      },150);
     }
   }
 });
+
+mostrarSeccion('menu');
 </script>
 </body>
 </html>
