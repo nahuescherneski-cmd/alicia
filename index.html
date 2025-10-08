@@ -34,13 +34,11 @@
     .logico {
       background-color: #e0f7fa;
       color: #004d40;
-      transition: all 0.5s ease-in-out;
     }
 
     .ilogico {
       background-color: #ffebf0;
       color: #6a1b9a;
-      transform: rotate(-0.5deg);
       font-style: italic;
       animation: parpadeo 4s infinite alternate;
     }
@@ -61,6 +59,36 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
       font-style: normal;
       font-size: 1rem;
+    }
+
+    .juego {
+      background-color: #e1bee7;
+      padding: 40px;
+    }
+
+    .juego h2 {
+      color: #4a148c;
+    }
+
+    .juego button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #ba68c8;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .juego button:hover {
+      background-color: #ab47bc;
+    }
+
+    .resultado {
+      margin-top: 20px;
+      font-weight: bold;
     }
 
     @keyframes parpadeo {
@@ -131,9 +159,81 @@
     </div>
   </section>
 
+  <!-- JUEGO -->
+  <section class="juego">
+    <h2>🎮 ¿Quién dijo esta frase?</h2>
+    <p id="frase"></p>
+    <div id="opciones"></div>
+    <div class="resultado" id="resultado"></div>
+  </section>
+
   <footer>
     <p>&copy; 2025 - Alicia en el País de las Maravillas</p>
   </footer>
+
+  <script>
+    const frases = [
+      {
+        frase: "¿Quién eres tú?",
+        personaje: "La Oruga"
+      },
+      {
+        frase: "¡Córtenle la cabeza!",
+        personaje: "Reina de Corazones"
+      },
+      {
+        frase: "Siempre es la hora del té.",
+        personaje: "Sombrerero Loco"
+      },
+      {
+        frase: "Me temo que estás completamente loco. Pero te diré un secreto: las mejores personas lo están.",
+        personaje: "Gato de Cheshire"
+      },
+      {
+        frase: "¡Oh, cielos! ¡Voy a llegar tarde!",
+        personaje: "Conejo Blanco"
+      },
+      {
+        frase: "Esto es imposible. — Solo si crees que lo es.",
+        personaje: "Alicia"
+      }
+    ];
+
+    const opciones = ["Alicia", "Reina de Corazones", "Sombrerero Loco", "Gato de Cheshire", "Conejo Blanco", "La Oruga"];
+
+    const fraseElem = document.getElementById("frase");
+    const opcionesElem = document.getElementById("opciones");
+    const resultadoElem = document.getElementById("resultado");
+
+    let fraseActual;
+
+    function mostrarFrase() {
+      resultadoElem.textContent = "";
+      fraseActual = frases[Math.floor(Math.random() * frases.length)];
+      fraseElem.textContent = `"${fraseActual.frase}"`;
+      opcionesElem.innerHTML = "";
+      opciones.forEach(personaje => {
+        const btn = document.createElement("button");
+        btn.textContent = personaje;
+        btn.onclick = () => verificarRespuesta(personaje);
+        opcionesElem.appendChild(btn);
+      });
+    }
+
+    function verificarRespuesta(seleccionado) {
+      if (seleccionado === fraseActual.personaje) {
+        resultadoElem.textContent = "✅ ¡Correcto!";
+        resultadoElem.style.color = "green";
+      } else {
+        resultadoElem.textContent = `❌ Incorrecto. Era: ${fraseActual.personaje}`;
+        resultadoElem.style.color = "red";
+      }
+      setTimeout(mostrarFrase, 2500);
+    }
+
+    // Iniciar el juego al cargar
+    mostrarFrase();
+  </script>
 
 </body>
 </html>
