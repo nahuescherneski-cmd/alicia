@@ -1,468 +1,161 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alicia en el País de las Maravillas</title>
 <style>
   body {
-    font-family: 'Georgia', serif;
-    background-color: #fefae0;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    transition: background 0.6s ease;
-  }
-
-  header {
-    background: linear-gradient(90deg, #7ec8e3, #4a90e2);
-    color: white;
+    background: linear-gradient(to bottom, #a8e6cf, #dcedc1);
+    font-family: 'Trebuchet MS', sans-serif;
     text-align: center;
-    padding: 18px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    overflow: hidden;
   }
+  h1 { margin-top: 20px; color: #333; }
+  .menu, .mundo, .juegos, .laberinto-container { display: none; }
+  .activo { display: block; }
 
-  .section {
-    display: none;
-    padding: 28px;
-    text-align: center;
-    animation: fadeIn 0.6s ease;
-  }
-  .section.active { display: block; }
-
-  img {
-    width: 70%;
-    max-width: 480px;
+  button {
+    padding: 12px 20px;
+    margin: 10px;
+    font-size: 18px;
+    cursor: pointer;
     border-radius: 12px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    transition: transform 0.35s;
-  }
-  img:hover { transform: scale(1.04) rotate(0.6deg); }
-
-  /* MUNDO LÓGICO / ILÓGICO */
-  .logico { background-color: #e0f7fa; color: #004d40; }
-  .ilogico { background-color: #fff0f8; color: #6a1b9a; animation: parpadeo 5s infinite alternate; }
-
-  .frase-ilogica { font-weight: bold; animation: giroLoco 6s infinite linear; }
-
-  .dato-curioso {
-    background-color: #fff9c4;
-    border-left: 6px solid #fdd835;
-    padding: 14px 18px;
-    margin: 20px auto 10px;
-    max-width: 720px;
-    text-align: left;
-    border-radius: 8px;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-  }
-
-  /* Juegos */
-  .juego {
-    background: linear-gradient(145deg,#f3e5f5,#ede7f6);
-    padding: 26px;
-    margin: 28px auto;
-    border-radius: 12px;
-    max-width: 940px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-    position: relative;
-  }
-  .juego h2 { color: #4a148c; margin-bottom: 12px; animation: pulse 2s infinite alternate; }
-  .juego button {
-    margin: 6px;
-    padding: 10px 18px;
-    font-size: 1rem;
-    background: linear-gradient(90deg, #ba68c8, #ab47bc);
-    color: white;
     border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: transform 0.18s, box-shadow 0.2s;
+    background: #ffb6b9;
+    transition: transform 0.3s, background 0.3s;
   }
-  .juego button:hover { transform: scale(1.06); box-shadow: 0 6px 20px rgba(171,71,188,0.28); }
+  button:hover { background: #ff8c94; transform: scale(1.1); }
 
-  .resultado { margin-top: 14px; font-weight: bold; min-height: 30px; transition: transform 0.25s; }
-
-  #switchWorld {
-    position: fixed;
-    top: 18px;
-    right: 18px;
-    background: linear-gradient(90deg,#ff8a80,#ff5252);
-    color: white;
-    padding: 10px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    z-index: 2000;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-  }
-  #switchWorld:hover { transform: scale(1.06); }
-
-  /* Memoria */
-  .memoria-container {
+  .laberinto {
     display: grid;
-    grid-template-columns: repeat(6, 72px);
-    grid-gap: 8px;
-    justify-content: center;
-    margin-bottom: 10px;
+    margin: 20px auto;
+    background: #222;
+    border: 5px solid #555;
+    gap: 2px;
   }
-  .card {
-    width: 72px; height: 72px;
-    background: #6a1b9a;
-    color: transparent;
-    border-radius: 10px;
-    display:flex;align-items:center;justify-content:center;
-    font-size:1.2rem; cursor:pointer;
-    transform-style:preserve-3d; transition: transform 0.52s;
+  .celda {
+    width: 25px;
+    height: 25px;
+    background: #eee;
   }
-  .card.flipped { background:#e0f7fa; color:#004d40; transform: rotateY(180deg); }
+  .pared { background: #333; }
+  .jugador { background: #4CAF50; }
+  .meta { background: gold; }
 
-  .timer { font-weight:bold; color:#4a148c; margin-bottom:10px; }
-
-  /* Laberinto */
-  #maze {
-    border: 3px solid #4a148c;
-    margin: 16px auto;
-    display:block;
-    border-radius:10px;
-    background: #fff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  }
-
-  /* Partículas */
-  .particle {
-    position:absolute; border-radius:50%; pointer-events:none;
-    animation: fly 1.8s ease-out forwards;
-  }
-  @keyframes fly { to { transform: translateY(-220px) scale(0.4); opacity:0; } }
-
-  /* Small animations */
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.04)} }
-  @keyframes parpadeo { 0%{ background-color:#fff0f8 } 100%{ background-color:#ffe6f2 } }
-  @keyframes giroLoco { 0%{transform:rotate(0deg)} 50%{transform:rotate(2deg)} 100%{transform:rotate(-2deg)} }
-
-  footer { background:#7ec8e3; color:white; text-align:center; padding:12px; margin-top:18px; }
-  @media (max-width:800px){
-    .memoria-container { grid-template-columns: repeat(4, 72px); }
-    .card { width:64px; height:64px; }
-  }
+  .volver { background: #b5ead7; margin-top: 20px; }
 </style>
 </head>
 <body>
 
-<button id="switchWorld">🎩 Ir al Mundo Ilógico</button>
+<h1>🌟 Alicia en el País de las Maravillas 🌟</h1>
 
-<header>
-  <h1>✨ Alicia en el País de las Maravillas ✨</h1>
-  <p style="margin:6px 0 0; font-size:0.95rem;">Navega entre lo lógico y lo ilógico, juega y explora.</p>
-</header>
+<!-- 🏠 MENÚ PRINCIPAL -->
+<div class="menu activo" id="menu">
+  <button onclick="mostrarSeccion('mundoLogico')">🌿 Mundo Lógico</button>
+  <button onclick="mostrarSeccion('mundoIlogico')">🌀 Mundo Ilógico</button>
+  <button onclick="mostrarSeccion('juegos')">🎮 Juegos</button>
+</div>
 
-<!-- MUNDO LÓGICO -->
-<section id="world-logico" class="section active logico">
+<!-- 🌿 MUNDO LÓGICO -->
+<div class="mundo" id="mundoLogico">
   <h2>🌿 Mundo Lógico</h2>
-  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia mundo lógico">
-  <p style="max-width:720px; margin:12px auto;">En el mundo lógico, todo tiene causa y consecuencia: reglas claras, relojes que funcionan y orden. Alicia interpreta la realidad con lógica y razón.</p>
-  <ul style="max-width:720px; margin:0 auto 10px; text-align:left;">
-    <li>El té se toma a las cinco.</li>
-    <li>Los relojes funcionan correctamente.</li>
-    <li>Las palabras mantienen su significado.</li>
-  </ul>
-  <div class="dato-curioso">
-    <strong>🎬 Dato curioso:</strong> En la versión animada clásica (1951), Alicia simboliza el pensamiento racional y las normas sociales de la Inglaterra victoriana.
-  </div>
-</section>
+  <p>Aquí todo tiene sentido… o casi 😉</p>
+  <p><b>Dato curioso:</b> El sombrerero loco se basa en un personaje real del siglo XIX.</p>
+  <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
+</div>
 
-<!-- MUNDO ILÓGICO -->
-<section id="world-ilogico" class="section ilogico">
-  <h2>🎩 Mundo Ilógico</h2>
-  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia mundo ilógico">
-  <p style="max-width:720px; margin:12px auto;">Aquí todo puede pasar: el conejo llega tarde, las flores conversan y el gato sonríe y desaparece. Las reglas cambian constantemente.</p>
-  <p class="frase-ilogica">“¿Quién eres tú?” preguntó la Oruga mientras fumaba en espiral.</p>
-  <p class="frase-ilogica">“¡Córtenle la cabeza!” rugió la Reina sin razón aparente.</p>
-  <div class="dato-curioso">
-    <strong>🧠 Dato curioso:</strong> La famosa pregunta “¿Por qué un cuervo se parece a un escritorio?” fue originalemente escrita sin respuesta; Lewis Carroll quería provocar asombro y juego.
-  </div>
+<!-- 🌀 MUNDO ILÓGICO -->
+<div class="mundo" id="mundoIlogico">
+  <h2>🌀 Mundo Ilógico</h2>
+  <p>“El tiempo corre al revés y las flores hablan.” 🌸⏳</p>
+  <p><b>Dato curioso:</b> Lewis Carroll era matemático, por eso hay acertijos escondidos en el libro.</p>
+  <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
+</div>
 
-  <!-- Juegos dentro del mundo ilógico (pueden verse cuando estemos allí) -->
-  <div class="juego" style="margin-top:18px;">
-    <h2>🎭 ¿Quién dijo esta frase?</h2>
-    <div id="timer1" class="timer"></div>
-    <p id="frase" style="font-size:1.05rem; min-height:48px;"></p>
-    <div id="opciones" style="margin-top:10px;"></div>
-    <div class="resultado" id="resultado"></div>
-  </div>
+<!-- 🎮 JUEGOS -->
+<div class="juegos" id="juegos">
+  <h2>🎮 Juegos</h2>
+  <button onclick="iniciarLaberinto('facil')">Laberinto Fácil</button>
+  <button onclick="iniciarLaberinto('medio')">Laberinto Medio</button>
+  <button onclick="iniciarLaberinto('dificil')">Laberinto Difícil</button>
+  <button onclick="iniciarLaberinto('imposible')">Laberinto Imposible 😈</button>
+  <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
+</div>
 
-  <div class="juego">
-    <h2>🃏 Juego de Memoria</h2>
-    <div id="timer2" class="timer"></div>
-    <div id="memoria" class="memoria-container"></div>
-    <div id="memoriaResultado"></div>
-  </div>
-
-  <div class="juego">
-    <h2>🌀 Laberinto Difícil</h2>
-    <canvas id="maze"></canvas>
-    <p style="margin-top:8px;">Usa las flechas ← ↑ → ↓ para mover a Alicia (cuadro amarillo). Llega a la salida (cuadro verde).</p>
-  </div>
-</section>
-
-<footer>
-  <p>&copy; 2025 - Alicia en el País de las Maravillas</p>
-</footer>
+<!-- 🧭 LABERINTO -->
+<div class="laberinto-container" id="laberintoContainer">
+  <h2 id="tituloLaberinto"></h2>
+  <div id="laberinto" class="laberinto"></div>
+  <button class="volver" onclick="mostrarSeccion('juegos')">Volver a Juegos</button>
+</div>
 
 <script>
-/* ---------- Cambiar Mundo ---------- */
-const btnSwitch = document.getElementById('switchWorld');
-const mundoLogico = document.getElementById('world-logico');
-const mundoIlogico = document.getElementById('world-ilogico');
-let enIlogico = false;
+let jugador = { x: 0, y: 0 };
+let meta = { x: 0, y: 0 };
+let mapa = [];
+let tamaño = 10;
 
-btnSwitch.addEventListener('click', () => {
-  enIlogico = !enIlogico;
-  mundoLogico.classList.toggle('active', !enIlogico);
-  mundoIlogico.classList.toggle('active', enIlogico);
-  btnSwitch.textContent = enIlogico ? '🌿 Volver al Mundo Lógico' : '🎩 Ir al Mundo Ilógico';
-  document.body.style.background = enIlogico ? '#fff0f8' : '#e8f7f9';
-});
+function mostrarSeccion(id) {
+  document.querySelectorAll('.menu, .mundo, .juegos, .laberinto-container')
+    .forEach(s => s.classList.remove('activo'));
+  document.getElementById(id).classList.add('activo');
+}
 
-/* ---------- Juego 1: Frases con temporizador & animaciones ---------- */
-const frases = [
-  { frase: "¿Quién eres tú?", personaje: "La Oruga" },
-  { frase: "¡Córtenle la cabeza!", personaje: "Reina de Corazones" },
-  { frase: "Siempre es la hora del té.", personaje: "Sombrerero Loco" },
-  { frase: "Me temo que estás completamente loco. Pero las mejores personas lo están.", personaje: "Gato de Cheshire" },
-  { frase: "¡Oh cielos! ¡Llegaré tarde!", personaje: "Conejo Blanco" },
-  { frase: "Esto es imposible. — Solo si crees que lo es.", personaje: "Alicia" },
-  { frase: "Si no sabes a dónde vas, cualquier camino sirve.", personaje: "Gato de Cheshire" },
-  { frase: "Nada sería lo que es, porque todo sería lo que no es.", personaje: "Sombrerero Loco" },
-  { frase: "¡Viva el caos!", personaje: "Sombrerero Loco" },
-  { frase: "Siempre he sabido quién soy esta mañana.", personaje: "Alicia" }
-];
-const opciones = ["Alicia","Reina de Corazones","Sombrerero Loco","Gato de Cheshire","Conejo Blanco","La Oruga"];
-const fraseElem = document.getElementById('frase');
-const opcionesElem = document.getElementById('opciones');
-const resultadoElem = document.getElementById('resultado');
-const timer1 = document.getElementById('timer1');
-let fraseActual, tiempoRestante, temporizador1;
+function generarLaberinto(nivel) {
+  if(nivel === 'facil') tamaño = 10;
+  if(nivel === 'medio') tamaño = 15;
+  if(nivel === 'dificil') tamaño = 20;
+  if(nivel === 'imposible') tamaño = 25;
 
-function mostrarFrase(){
-  clearInterval(temporizador1);
-  resultadoElem.textContent = '';
-  fraseActual = frases[Math.floor(Math.random()*frases.length)];
-  fraseElem.textContent = `"${fraseActual.frase}"`;
-  opcionesElem.innerHTML = '';
-  // crear botones con pequeña animación
-  opciones.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.textContent = opt;
-    btn.style.transition = 'transform 0.18s';
-    btn.onclick = () => verificarRespuesta(opt, btn);
-    opcionesElem.appendChild(btn);
+  mapa = Array.from({ length: tamaño }, () =>
+    Array.from({ length: tamaño }, () => Math.random() < 0.3 ? 1 : 0)
+  );
+  jugador = { x: 0, y: 0 };
+  meta = { x: tamaño - 1, y: tamaño - 1 };
+  mapa[jugador.y][jugador.x] = 0;
+  mapa[meta.y][meta.x] = 0;
+}
+
+function dibujarLaberinto() {
+  const contenedor = document.getElementById('laberinto');
+  contenedor.innerHTML = '';
+  contenedor.style.gridTemplateColumns = `repeat(${tamaño}, 25px)`;
+
+  mapa.forEach((fila, y) => {
+    fila.forEach((celda, x) => {
+      const div = document.createElement('div');
+      div.classList.add('celda');
+      if (celda === 1) div.classList.add('pared');
+      if (jugador.x === x && jugador.y === y) div.classList.add('jugador');
+      if (meta.x === x && meta.y === y) div.classList.add('meta');
+      contenedor.appendChild(div);
+    });
   });
-  tiempoRestante = 9; // algo más difícil
-  timer1.textContent = `⏳ Tiempo: ${tiempoRestante}s`;
-  temporizador1 = setInterval(() => {
-    tiempoRestante--;
-    timer1.textContent = `⏳ Tiempo: ${tiempoRestante}s`;
-    if (tiempoRestante <= 0){
-      clearInterval(temporizador1);
-      resultadoElem.textContent = '⏰ Se acabó el tiempo';
-      resultadoElem.style.color = 'crimson';
-      resultadoElem.style.transform = 'scale(1.06)';
-      setTimeout(mostrarFrase, 1500);
-    }
-  }, 1000);
-}
-function verificarRespuesta(seleccion, btn){
-  clearInterval(temporizador1);
-  if (seleccion === fraseActual.personaje){
-    resultadoElem.textContent = '✅ ¡Correcto!';
-    resultadoElem.style.color = 'green';
-    resultadoElem.style.transform = 'scale(1.12)';
-    btn.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:380});
-    lanzarParticulas(btn);
-  } else {
-    resultadoElem.textContent = `❌ Incorrecto. Era: ${fraseActual.personaje}`;
-    resultadoElem.style.color = 'red';
-    resultadoElem.style.transform = 'scale(1.02)';
-  }
-  setTimeout(() => { resultadoElem.style.transform='scale(1)'; mostrarFrase(); }, 1400);
-}
-mostrarFrase();
-
-/* ---------- Juego 2: Memoria (más cartas, tiempo limitado) ---------- */
-const memoriaContainer = document.getElementById('memoria');
-const memoriaResultado = document.getElementById('memoriaResultado');
-const timer2 = document.getElementById('timer2');
-const icons = ['👑','🐇','🫖','🎩','🐛','😼','🕰️','🍄']; // 8 pares -> 16 cartas
-let cards = [];
-let firstCard=null, secondCard=null, lock=false, matches=0, tiempo2=55, cronometro2=null;
-
-function crearTablero(){
-  memoriaContainer.innerHTML = '';
-  cards = [...icons, ...icons].sort(()=>0.5-Math.random());
-  cards.forEach(icon => {
-    const c = document.createElement('div');
-    c.className = 'card';
-    c.textContent = icon;
-    c.dataset.valor = icon;
-    c.addEventListener('click', voltearCarta);
-    memoriaContainer.appendChild(c);
-  });
-  matches = 0;
-  tiempo2 = 55; // un poco más de tiempo
-  timer2.textContent = `⏳ Tiempo: ${tiempo2}s`;
-  memoriaResultado.textContent = '';
-  clearInterval(cronometro2);
-  cronometro2 = setInterval(()=>{
-    tiempo2--;
-    timer2.textContent = `⏳ Tiempo: ${tiempo2}s`;
-    if (tiempo2<=0){
-      clearInterval(cronometro2);
-      memoriaResultado.textContent = '⏳ ¡Se acabó el tiempo! Intenta otra vez.';
-      memoriaResultado.style.color = 'red';
-      bloquearCartas();
-    }
-  },1000);
-}
-function voltearCarta(){
-  if (lock || this.classList.contains('flipped')) return;
-  this.classList.add('flipped');
-  if (!firstCard){ firstCard = this; return; }
-  secondCard = this; lock = true;
-  if (firstCard.dataset.valor === secondCard.dataset.valor){
-    matches++;
-    firstCard.classList.add('matched');
-    secondCard.classList.add('matched');
-    firstCard.style.pointerEvents = 'none';
-    secondCard.style.pointerEvents = 'none';
-    resetCards();
-    if (matches === cards.length/2){
-      clearInterval(cronometro2);
-      memoriaResultado.textContent = '🎉 ¡Ganaste el juego de memoria!';
-      memoriaResultado.style.color = 'green';
-      lanzarParticulas(memoriaContainer);
-    }
-  } else {
-    setTimeout(()=>{
-      firstCard.classList.remove('flipped');
-      secondCard.classList.remove('flipped');
-      resetCards();
-    },700);
-  }
-}
-function resetCards(){ [firstCard, secondCard] = [null, null]; lock = false; }
-function bloquearCartas(){ document.querySelectorAll('.card').forEach(c=>c.style.pointerEvents='none'); }
-crearTablero();
-
-/* ---------- Juego 3: Laberinto difícil (25x25 con DFS carve) ---------- */
-const canvas = document.getElementById('maze');
-const ctx = canvas.getContext('2d');
-const cols = 25, rows = 25, cellSize = 18;
-canvas.width = cols * cellSize;
-canvas.height = rows * cellSize;
-let maze = [];
-let player = { x: 0, y: 0 };
-const exit = { x: cols - 1, y: rows - 1 };
-
-function generarLaberinto(){
-  // Iniciamos lleno de muros (1) y haremos carve (0) con DFS en celdas de paso (espaciado de 2)
-  maze = Array.from({length: rows}, () => Array(cols).fill(1));
-  function carve(px, py){
-    maze[py][px] = 0;
-    const dirs = [[0,2],[0,-2],[2,0],[-2,0]].sort(()=>Math.random()-0.5);
-    for (const [dx,dy] of dirs){
-      const nx = px + dx, ny = py + dy;
-      if (nx > 0 && ny > 0 && nx < cols && ny < rows && maze[ny][nx] === 1){
-        maze[py + dy/2][px + dx/2] = 0;
-        carve(nx, ny);
-      }
-    }
-  }
-  // Escogemos un start que sea par para que carve funcione
-  carve(0,0);
-  // Aseguramos que la salida y entrada sean caminos
-  maze[0][0] = 0;
-  maze[exit.y][exit.x] = 0;
-  // opcional: añadir algunos huecos extra aleatorios para más caminos
-  for(let i=0;i< Math.floor((cols*rows)*0.03); i++){
-    const rx = Math.floor(Math.random()*cols), ry = Math.floor(Math.random()*rows);
-    maze[ry][rx] = 0;
-  }
 }
 
-function dibujarLaberinto(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  for (let y=0; y<rows; y++){
-    for (let x=0; x<cols; x++){
-      ctx.fillStyle = maze[y][x] === 1 ? '#6a1b9a' : '#ffffff';
-      ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
-    }
-  }
-  // Salida
-  ctx.fillStyle = '#4caf50';
-  ctx.fillRect(exit.x*cellSize, exit.y*cellSize, cellSize, cellSize);
-  // Jugador (dibujado con pequeño padding para que parezca un personaje)
-  ctx.fillStyle = '#ffeb3b';
-  ctx.fillRect(player.x*cellSize + 3, player.y*cellSize + 3, cellSize - 6, cellSize - 6);
-}
-
-function mover(dx, dy){
-  const nx = player.x + dx, ny = player.y + dy;
-  if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) return;
-  if (maze[ny][nx] === 1) return;
-  player.x = nx; player.y = ny;
+function iniciarLaberinto(nivel) {
+  generarLaberinto(nivel);
+  document.getElementById('tituloLaberinto').textContent = 
+    `🧭 Nivel: ${nivel.toUpperCase()}`;
   dibujarLaberinto();
-  if (player.x === exit.x && player.y === exit.y){
-    setTimeout(()=> {
-      lanzarParticulas(canvas);
-      alert('🎉 ¡Alicia escapó del laberinto difícil!');
-      player = { x: 0, y: 0 };
-      generarLaberinto();
-      dibujarLaberinto();
-    }, 120);
-  }
+  mostrarSeccion('laberintoContainer');
 }
 
-window.addEventListener('keydown', (e) => {
-  if (!mundoIlogico.classList.contains('active')) return; // movimiento solo cuando ilógico visible (opcional)
-  switch(e.key){
-    case 'ArrowUp': mover(0,-1); break;
-    case 'ArrowDown': mover(0,1); break;
-    case 'ArrowLeft': mover(-1,0); break;
-    case 'ArrowRight': mover(1,0); break;
+document.addEventListener('keydown', e => {
+  let { x, y } = jugador;
+  if (e.key === 'ArrowUp') y--;
+  if (e.key === 'ArrowDown') y++;
+  if (e.key === 'ArrowLeft') x--;
+  if (e.key === 'ArrowRight') x++;
+  if (mapa[y] && mapa[y][x] === 0) jugador = { x, y };
+  dibujarLaberinto();
+  if (jugador.x === meta.x && jugador.y === meta.y) {
+    alert('🎉 ¡Nivel completado!');
+    mostrarSeccion('juegos');
   }
 });
-
-generarLaberinto();
-dibujarLaberinto();
-
-/* ---------- Partículas ---------- */
-function lanzarParticulas(elem){
-  const rect = elem.getBoundingClientRect();
-  for (let i=0; i<26; i++){
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random()*10 + 6;
-    p.style.width = size + 'px';
-    p.style.height = size + 'px';
-    p.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*60) + 'px';
-    p.style.top = (rect.top + rect.height/2 + (Math.random()-0.5)*30) + 'px';
-    p.style.background = `hsl(${Math.random()*360}, 90%, ${50 + Math.random()*10}%)`;
-    document.body.appendChild(p);
-    // animación con desplazamiento aleatorio
-    const tx = (Math.random()-0.5) * 320;
-    const ty = - (100 + Math.random()*220);
-    p.animate([
-      { transform: 'translate(0,0) scale(1)', opacity: 1 },
-      { transform: `translate(${tx}px, ${ty}px) scale(0.5)`, opacity: 0 }
-    ], { duration: 1200 + Math.random()*800, easing: 'cubic-bezier(.2,.8,.2,1)' });
-    setTimeout(()=> p.remove(), 2200);
-  }
-}
-
-/* ---------- Opcional: reiniciar juegos con teclas o botones ---------- */
-/* Puedes añadir botones para reiniciar si quieres; por ahora ya se regeneran automáticamente al ganar/terminar. */
-
 </script>
 </body>
 </html>
+
