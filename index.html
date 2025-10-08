@@ -38,6 +38,37 @@
     transform: scale(1.05) rotate(1deg);
   }
 
+  /* --- MUNDO LÓGICO E ILÓGICO --- */
+  .logico {
+    background-color: #e0f7fa;
+    color: #004d40;
+  }
+  .ilogico {
+    background-color: #ffebf0;
+    color: #6a1b9a;
+    font-style: italic;
+    animation: parpadeo 4s infinite alternate;
+  }
+
+  .frase-ilogica {
+    font-weight: bold;
+    animation: giroLoco 6s infinite linear;
+  }
+
+  .dato-curioso {
+    background-color: #fff9c4;
+    border-left: 6px solid #fdd835;
+    padding: 15px 20px;
+    margin: 30px auto 10px;
+    max-width: 600px;
+    text-align: left;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    font-style: normal;
+    font-size: 1rem;
+  }
+
+  /* --- JUEGOS --- */
   .juego {
     background: linear-gradient(145deg,#e1bee7,#d1c4e9);
     padding: 40px;
@@ -82,6 +113,8 @@
   @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
   @keyframes slideUp { from {transform: translateY(30px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
   @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.05);} }
+  @keyframes parpadeo { 0% { background-color: #ffe0f0; } 100% { background-color: #ffccf5; } }
+  @keyframes giroLoco { 0% { transform: rotate(0deg);} 50% { transform: rotate(2deg);} 100% { transform: rotate(-2deg);} }
 
   /* --- Juego de Memoria --- */
   .memoria-container {
@@ -141,6 +174,13 @@
       opacity: 0;
     }
   }
+
+  footer {
+    background: #7ec8e3;
+    color: white;
+    text-align: center;
+    padding: 15px;
+  }
 </style>
 </head>
 <body>
@@ -154,7 +194,35 @@
   <p>Entre lógica y locura…</p>
 </header>
 
-<!-- Juego 1 -->
+<!-- MUNDO LÓGICO -->
+<section class="logico">
+  <h2>🌿 Mundo Lógico</h2>
+  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia en el mundo lógico">
+  <p>En el mundo lógico, todo tiene una causa y consecuencia. Alicia vive en un entorno estructurado y coherente.</p>
+  <ul>
+    <li>El té se toma a las cinco</li>
+    <li>Los relojes funcionan bien</li>
+    <li>Las palabras significan lo que deben</li>
+  </ul>
+  <div class="dato-curioso">
+    <strong>🎬 Dato curioso:</strong> En la película animada de Disney (1951), Alicia representa el pensamiento racional frente al caos. Esta parte "lógica" refleja su origen en la Inglaterra victoriana.
+  </div>
+</section>
+
+<!-- MUNDO ILÓGICO -->
+<section class="ilogico">
+  <h2>🎩 Mundo Ilógico</h2>
+  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia en el mundo ilógico">
+  <p>Aquí, el conejo llega tarde, las flores hablan y el gato desaparece sonriendo. Nada tiene sentido, y las reglas cambian a cada momento.</p>
+  <p class="frase-ilogica">“¿Quién eres tú?” preguntó la oruga mientras fumaba en espiral.</p>
+  <p class="frase-ilogica">“¡Córtenle la cabeza!” gritó la Reina sin razón aparente.</p>
+  <p class="frase-ilogica">El reloj corre hacia atrás y el tiempo toma el té.</p>
+  <div class="dato-curioso">
+    <strong>🧠 Dato curioso:</strong> La famosa frase “¿Por qué un cuervo se parece a un escritorio?” fue escrita sin respuesta intencionalmente. Lewis Carroll lo hizo para confundir.
+  </div>
+</section>
+
+<!-- JUEGO 1 -->
 <section class="juego" id="juegoFrases">
   <h2>🎭 ¿Quién dijo esta frase?</h2>
   <div id="timer1" class="timer"></div>
@@ -163,7 +231,7 @@
   <div class="resultado" id="resultado"></div>
 </section>
 
-<!-- Juego 2 -->
+<!-- JUEGO 2 -->
 <section class="juego" id="juegoMemoria">
   <h2>🃏 Juego de Memoria</h2>
   <div class="timer" id="timer2"></div>
@@ -171,15 +239,19 @@
   <div id="memoriaResultado"></div>
 </section>
 
-<!-- Juego 3 -->
+<!-- JUEGO 3 -->
 <section class="juego">
   <h2>🌀 Laberinto Mágico</h2>
   <canvas id="maze" width="300" height="300"></canvas>
   <p>Usa las flechas para llegar a la salida 🌿</p>
 </section>
 
+<footer>
+  <p>&copy; 2025 - Alicia en el País de las Maravillas</p>
+</footer>
+
 <script>
-/* --- Juego 1 --- */
+/* --- Juego 1: Frases --- */
 const frases = [
   { frase: "¿Quién eres tú?", personaje: "La Oruga" },
   { frase: "¡Córtenle la cabeza!", personaje: "Reina de Corazones" },
@@ -244,7 +316,7 @@ function verificarRespuesta(sel) {
 }
 mostrarFrase();
 
-/* --- Juego 2 --- */
+/* --- Juego 2: Memoria --- */
 const memoriaContainer = document.getElementById('memoria');
 const memoriaResultado = document.getElementById('memoriaResultado');
 const timer2 = document.getElementById('timer2');
@@ -307,7 +379,7 @@ function bloquearCartas(){ document.querySelectorAll('.card').forEach(c=>c.style
 
 crearTablero();
 
-/* --- Juego 3 --- */
+/* --- Juego 3: Laberinto --- */
 const canvas = document.getElementById('maze');
 const ctx = canvas.getContext('2d');
 const cols=15, rows=15, cellSize=20;
@@ -370,16 +442,16 @@ generarLaberinto();
 dibujarLaberinto();
 
 /* --- Partículas --- */
-function lanzarParticulas(element){
+function lanzarParticulas(elem){
+  const rect = elem.getBoundingClientRect();
   for(let i=0;i<20;i++){
     const p=document.createElement('div');
     p.classList.add('particle');
     p.style.width=p.style.height=Math.random()*8+5+'px';
-    p.style.background=`hsl(${Math.random()*360},100%,70%)`;
-    const rect=element.getBoundingClientRect();
+    p.style.background=`hsl(${Math.random()*360},100%,50%)`;
     p.style.left=rect.left+rect.width/2+'px';
     p.style.top=rect.top+rect.height/2+'px';
-    p.style.transform=`translate(${(Math.random()-0.5)*200}px, ${(Math.random()-0.5)*200}px)`;
+    p.style.transform=`translate(${(Math.random()-0.5)*300}px,${(Math.random()-0.5)*200}px)`;
     document.body.appendChild(p);
     setTimeout(()=>p.remove(),2000);
   }
