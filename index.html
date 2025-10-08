@@ -10,240 +10,199 @@
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    transition: background 0.6s ease;
   }
 
   header {
     background: linear-gradient(90deg, #7ec8e3, #4a90e2);
     color: white;
     text-align: center;
-    padding: 20px;
-    animation: fadeIn 2s ease-in;
+    padding: 18px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
   }
 
-  section {
-    padding: 40px;
+  .section {
+    display: none;
+    padding: 28px;
     text-align: center;
-    animation: slideUp 1s ease-in;
+    animation: fadeIn 0.6s ease;
   }
+  .section.active { display: block; }
 
   img {
     width: 70%;
-    max-width: 500px;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: transform 0.4s;
+    max-width: 480px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    transition: transform 0.35s;
   }
+  img:hover { transform: scale(1.04) rotate(0.6deg); }
 
-  img:hover {
-    transform: scale(1.05) rotate(1deg);
-  }
+  /* MUNDO LÓGICO / ILÓGICO */
+  .logico { background-color: #e0f7fa; color: #004d40; }
+  .ilogico { background-color: #fff0f8; color: #6a1b9a; animation: parpadeo 5s infinite alternate; }
 
-  /* --- MUNDO LÓGICO E ILÓGICO --- */
-  .logico {
-    background-color: #e0f7fa;
-    color: #004d40;
-  }
-  .ilogico {
-    background-color: #ffebf0;
-    color: #6a1b9a;
-    font-style: italic;
-    animation: parpadeo 4s infinite alternate;
-  }
-
-  .frase-ilogica {
-    font-weight: bold;
-    animation: giroLoco 6s infinite linear;
-  }
+  .frase-ilogica { font-weight: bold; animation: giroLoco 6s infinite linear; }
 
   .dato-curioso {
     background-color: #fff9c4;
     border-left: 6px solid #fdd835;
-    padding: 15px 20px;
-    margin: 30px auto 10px;
-    max-width: 600px;
+    padding: 14px 18px;
+    margin: 20px auto 10px;
+    max-width: 720px;
     text-align: left;
     border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-style: normal;
-    font-size: 1rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
   }
 
-  /* --- JUEGOS --- */
+  /* Juegos */
   .juego {
-    background: linear-gradient(145deg,#e1bee7,#d1c4e9);
-    padding: 40px;
-    margin: 40px auto;
+    background: linear-gradient(145deg,#f3e5f5,#ede7f6);
+    padding: 26px;
+    margin: 28px auto;
     border-radius: 12px;
-    max-width: 800px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    max-width: 940px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
     position: relative;
   }
-
-  .juego h2 {
-    color: #4a148c;
-    margin-bottom: 20px;
-    animation: pulse 2s infinite alternate;
-  }
-
+  .juego h2 { color: #4a148c; margin-bottom: 12px; animation: pulse 2s infinite alternate; }
   .juego button {
-    margin: 8px;
-    padding: 12px 25px;
+    margin: 6px;
+    padding: 10px 18px;
     font-size: 1rem;
     background: linear-gradient(90deg, #ba68c8, #ab47bc);
     color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.3s;
+    transition: transform 0.18s, box-shadow 0.2s;
   }
+  .juego button:hover { transform: scale(1.06); box-shadow: 0 6px 20px rgba(171,71,188,0.28); }
 
-  .juego button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 15px #ab47bc;
+  .resultado { margin-top: 14px; font-weight: bold; min-height: 30px; transition: transform 0.25s; }
+
+  #switchWorld {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    background: linear-gradient(90deg,#ff8a80,#ff5252);
+    color: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    z-index: 2000;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
   }
+  #switchWorld:hover { transform: scale(1.06); }
 
-  .resultado {
-    margin-top: 20px;
-    font-weight: bold;
-    font-size: 1.2rem;
-    min-height: 30px;
-    transition: transform 0.3s;
-  }
-
-  @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-  @keyframes slideUp { from {transform: translateY(30px); opacity: 0;} to {transform: translateY(0); opacity: 1;} }
-  @keyframes pulse { from {transform: scale(1);} to {transform: scale(1.05);} }
-  @keyframes parpadeo { 0% { background-color: #ffe0f0; } 100% { background-color: #ffccf5; } }
-  @keyframes giroLoco { 0% { transform: rotate(0deg);} 50% { transform: rotate(2deg);} 100% { transform: rotate(-2deg);} }
-
-  /* --- Juego de Memoria --- */
+  /* Memoria */
   .memoria-container {
     display: grid;
-    grid-template-columns: repeat(6, 80px);
-    grid-gap: 10px;
+    grid-template-columns: repeat(6, 72px);
+    grid-gap: 8px;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
-
   .card {
-    width: 80px;
-    height: 80px;
+    width: 72px; height: 72px;
     background: #6a1b9a;
     color: transparent;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    cursor: pointer;
-    transform-style: preserve-3d;
-    transition: transform 0.6s;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem; cursor:pointer;
+    transform-style:preserve-3d; transition: transform 0.52s;
   }
+  .card.flipped { background:#e0f7fa; color:#004d40; transform: rotateY(180deg); }
 
-  .card.flipped {
-    background: #e0f7fa;
-    color: #004d40;
-    transform: rotateY(180deg);
-  }
+  .timer { font-weight:bold; color:#4a148c; margin-bottom:10px; }
 
-  .timer {
-    font-weight: bold;
-    color: #4a148c;
-    margin-bottom: 15px;
-  }
-
-  /* --- Laberinto --- */
+  /* Laberinto */
   #maze {
     border: 3px solid #4a148c;
-    margin: 20px auto;
-    display: block;
-    border-radius: 12px;
-    background: white;
+    margin: 16px auto;
+    display:block;
+    border-radius:10px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   }
 
-  /* --- Partículas ganadoras --- */
+  /* Partículas */
   .particle {
-    position: absolute;
-    border-radius: 50%;
-    animation: fly 2s ease-out forwards;
+    position:absolute; border-radius:50%; pointer-events:none;
+    animation: fly 1.8s ease-out forwards;
   }
+  @keyframes fly { to { transform: translateY(-220px) scale(0.4); opacity:0; } }
 
-  @keyframes fly {
-    to {
-      transform: translateY(-200px) scale(0.5);
-      opacity: 0;
-    }
-  }
+  /* Small animations */
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes pulse { from{transform:scale(1)} to{transform:scale(1.04)} }
+  @keyframes parpadeo { 0%{ background-color:#fff0f8 } 100%{ background-color:#ffe6f2 } }
+  @keyframes giroLoco { 0%{transform:rotate(0deg)} 50%{transform:rotate(2deg)} 100%{transform:rotate(-2deg)} }
 
-  footer {
-    background: #7ec8e3;
-    color: white;
-    text-align: center;
-    padding: 15px;
+  footer { background:#7ec8e3; color:white; text-align:center; padding:12px; margin-top:18px; }
+  @media (max-width:800px){
+    .memoria-container { grid-template-columns: repeat(4, 72px); }
+    .card { width:64px; height:64px; }
   }
 </style>
 </head>
 <body>
 
-<audio autoplay loop>
-  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-</audio>
+<button id="switchWorld">🎩 Ir al Mundo Ilógico</button>
 
 <header>
   <h1>✨ Alicia en el País de las Maravillas ✨</h1>
-  <p>Entre lógica y locura…</p>
+  <p style="margin:6px 0 0; font-size:0.95rem;">Navega entre lo lógico y lo ilógico, juega y explora.</p>
 </header>
 
 <!-- MUNDO LÓGICO -->
-<section class="logico">
+<section id="world-logico" class="section active logico">
   <h2>🌿 Mundo Lógico</h2>
-  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia en el mundo lógico">
-  <p>En el mundo lógico, todo tiene una causa y consecuencia. Alicia vive en un entorno estructurado y coherente.</p>
-  <ul>
-    <li>El té se toma a las cinco</li>
-    <li>Los relojes funcionan bien</li>
-    <li>Las palabras significan lo que deben</li>
+  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia mundo lógico">
+  <p style="max-width:720px; margin:12px auto;">En el mundo lógico, todo tiene causa y consecuencia: reglas claras, relojes que funcionan y orden. Alicia interpreta la realidad con lógica y razón.</p>
+  <ul style="max-width:720px; margin:0 auto 10px; text-align:left;">
+    <li>El té se toma a las cinco.</li>
+    <li>Los relojes funcionan correctamente.</li>
+    <li>Las palabras mantienen su significado.</li>
   </ul>
   <div class="dato-curioso">
-    <strong>🎬 Dato curioso:</strong> En la película animada de Disney (1951), Alicia representa el pensamiento racional frente al caos. Esta parte "lógica" refleja su origen en la Inglaterra victoriana.
+    <strong>🎬 Dato curioso:</strong> En la versión animada clásica (1951), Alicia simboliza el pensamiento racional y las normas sociales de la Inglaterra victoriana.
   </div>
 </section>
 
 <!-- MUNDO ILÓGICO -->
-<section class="ilogico">
+<section id="world-ilogico" class="section ilogico">
   <h2>🎩 Mundo Ilógico</h2>
-  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia en el mundo ilógico">
-  <p>Aquí, el conejo llega tarde, las flores hablan y el gato desaparece sonriendo. Nada tiene sentido, y las reglas cambian a cada momento.</p>
-  <p class="frase-ilogica">“¿Quién eres tú?” preguntó la oruga mientras fumaba en espiral.</p>
-  <p class="frase-ilogica">“¡Córtenle la cabeza!” gritó la Reina sin razón aparente.</p>
-  <p class="frase-ilogica">El reloj corre hacia atrás y el tiempo toma el té.</p>
+  <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia mundo ilógico">
+  <p style="max-width:720px; margin:12px auto;">Aquí todo puede pasar: el conejo llega tarde, las flores conversan y el gato sonríe y desaparece. Las reglas cambian constantemente.</p>
+  <p class="frase-ilogica">“¿Quién eres tú?” preguntó la Oruga mientras fumaba en espiral.</p>
+  <p class="frase-ilogica">“¡Córtenle la cabeza!” rugió la Reina sin razón aparente.</p>
   <div class="dato-curioso">
-    <strong>🧠 Dato curioso:</strong> La famosa frase “¿Por qué un cuervo se parece a un escritorio?” fue escrita sin respuesta intencionalmente. Lewis Carroll lo hizo para confundir.
+    <strong>🧠 Dato curioso:</strong> La famosa pregunta “¿Por qué un cuervo se parece a un escritorio?” fue originalemente escrita sin respuesta; Lewis Carroll quería provocar asombro y juego.
   </div>
-</section>
 
-<!-- JUEGO 1 -->
-<section class="juego" id="juegoFrases">
-  <h2>🎭 ¿Quién dijo esta frase?</h2>
-  <div id="timer1" class="timer"></div>
-  <p id="frase"></p>
-  <div id="opciones"></div>
-  <div class="resultado" id="resultado"></div>
-</section>
+  <!-- Juegos dentro del mundo ilógico (pueden verse cuando estemos allí) -->
+  <div class="juego" style="margin-top:18px;">
+    <h2>🎭 ¿Quién dijo esta frase?</h2>
+    <div id="timer1" class="timer"></div>
+    <p id="frase" style="font-size:1.05rem; min-height:48px;"></p>
+    <div id="opciones" style="margin-top:10px;"></div>
+    <div class="resultado" id="resultado"></div>
+  </div>
 
-<!-- JUEGO 2 -->
-<section class="juego" id="juegoMemoria">
-  <h2>🃏 Juego de Memoria</h2>
-  <div class="timer" id="timer2"></div>
-  <div id="memoria" class="memoria-container"></div>
-  <div id="memoriaResultado"></div>
-</section>
+  <div class="juego">
+    <h2>🃏 Juego de Memoria</h2>
+    <div id="timer2" class="timer"></div>
+    <div id="memoria" class="memoria-container"></div>
+    <div id="memoriaResultado"></div>
+  </div>
 
-<!-- JUEGO 3 -->
-<section class="juego">
-  <h2>🌀 Laberinto Mágico</h2>
-  <canvas id="maze" width="300" height="300"></canvas>
-  <p>Usa las flechas para llegar a la salida 🌿</p>
+  <div class="juego">
+    <h2>🌀 Laberinto Difícil</h2>
+    <canvas id="maze"></canvas>
+    <p style="margin-top:8px;">Usa las flechas ← ↑ → ↓ para mover a Alicia (cuadro amarillo). Llega a la salida (cuadro verde).</p>
+  </div>
 </section>
 
 <footer>
@@ -251,7 +210,21 @@
 </footer>
 
 <script>
-/* --- Juego 1: Frases --- */
+/* ---------- Cambiar Mundo ---------- */
+const btnSwitch = document.getElementById('switchWorld');
+const mundoLogico = document.getElementById('world-logico');
+const mundoIlogico = document.getElementById('world-ilogico');
+let enIlogico = false;
+
+btnSwitch.addEventListener('click', () => {
+  enIlogico = !enIlogico;
+  mundoLogico.classList.toggle('active', !enIlogico);
+  mundoIlogico.classList.toggle('active', enIlogico);
+  btnSwitch.textContent = enIlogico ? '🌿 Volver al Mundo Lógico' : '🎩 Ir al Mundo Ilógico';
+  document.body.style.background = enIlogico ? '#fff0f8' : '#e8f7f9';
+});
+
+/* ---------- Juego 1: Frases con temporizador & animaciones ---------- */
 const frases = [
   { frase: "¿Quién eres tú?", personaje: "La Oruga" },
   { frase: "¡Córtenle la cabeza!", personaje: "Reina de Corazones" },
@@ -260,202 +233,236 @@ const frases = [
   { frase: "¡Oh cielos! ¡Llegaré tarde!", personaje: "Conejo Blanco" },
   { frase: "Esto es imposible. — Solo si crees que lo es.", personaje: "Alicia" },
   { frase: "Si no sabes a dónde vas, cualquier camino sirve.", personaje: "Gato de Cheshire" },
-  { frase: "Nada sería lo que es, porque todo sería lo que no es.", personaje: "Sombrerero Loco" }
+  { frase: "Nada sería lo que es, porque todo sería lo que no es.", personaje: "Sombrerero Loco" },
+  { frase: "¡Viva el caos!", personaje: "Sombrerero Loco" },
+  { frase: "Siempre he sabido quién soy esta mañana.", personaje: "Alicia" }
 ];
-
 const opciones = ["Alicia","Reina de Corazones","Sombrerero Loco","Gato de Cheshire","Conejo Blanco","La Oruga"];
-const fraseElem = document.getElementById("frase");
-const opcionesElem = document.getElementById("opciones");
-const resultadoElem = document.getElementById("resultado");
-const timer1 = document.getElementById("timer1");
-let fraseActual, tiempoRestante, temporizador;
+const fraseElem = document.getElementById('frase');
+const opcionesElem = document.getElementById('opciones');
+const resultadoElem = document.getElementById('resultado');
+const timer1 = document.getElementById('timer1');
+let fraseActual, tiempoRestante, temporizador1;
 
-function mostrarFrase() {
-  clearInterval(temporizador);
-  resultadoElem.textContent = "";
-  fraseActual = frases[Math.floor(Math.random() * frases.length)];
+function mostrarFrase(){
+  clearInterval(temporizador1);
+  resultadoElem.textContent = '';
+  fraseActual = frases[Math.floor(Math.random()*frases.length)];
   fraseElem.textContent = `"${fraseActual.frase}"`;
-  opcionesElem.innerHTML = "";
-  opciones.forEach(p => {
-    const btn = document.createElement("button");
-    btn.textContent = p;
-    btn.onclick = () => verificarRespuesta(p);
+  opcionesElem.innerHTML = '';
+  // crear botones con pequeña animación
+  opciones.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.textContent = opt;
+    btn.style.transition = 'transform 0.18s';
+    btn.onclick = () => verificarRespuesta(opt, btn);
     opcionesElem.appendChild(btn);
   });
-  tiempoRestante = 10;
+  tiempoRestante = 9; // algo más difícil
   timer1.textContent = `⏳ Tiempo: ${tiempoRestante}s`;
-  temporizador = setInterval(() => {
+  temporizador1 = setInterval(() => {
     tiempoRestante--;
     timer1.textContent = `⏳ Tiempo: ${tiempoRestante}s`;
-    if (tiempoRestante <= 0) {
-      clearInterval(temporizador);
-      resultadoElem.textContent = "⏰ Se acabó el tiempo";
-      resultadoElem.style.color = "red";
-      resultadoElem.style.transform = "scale(1.2)";
-      setTimeout(mostrarFrase, 2000);
+    if (tiempoRestante <= 0){
+      clearInterval(temporizador1);
+      resultadoElem.textContent = '⏰ Se acabó el tiempo';
+      resultadoElem.style.color = 'crimson';
+      resultadoElem.style.transform = 'scale(1.06)';
+      setTimeout(mostrarFrase, 1500);
     }
   }, 1000);
 }
-
-function verificarRespuesta(sel) {
-  clearInterval(temporizador);
-  if (sel === fraseActual.personaje) {
-    resultadoElem.textContent = "✅ ¡Correcto!";
-    resultadoElem.style.color = "green";
-    resultadoElem.style.transform = "scale(1.3)";
-    lanzarParticulas(resultadoElem);
+function verificarRespuesta(seleccion, btn){
+  clearInterval(temporizador1);
+  if (seleccion === fraseActual.personaje){
+    resultadoElem.textContent = '✅ ¡Correcto!';
+    resultadoElem.style.color = 'green';
+    resultadoElem.style.transform = 'scale(1.12)';
+    btn.animate([{transform:'scale(1)'},{transform:'scale(1.12)'},{transform:'scale(1)'}],{duration:380});
+    lanzarParticulas(btn);
   } else {
-    resultadoElem.textContent = `❌ Era: ${fraseActual.personaje}`;
-    resultadoElem.style.color = "red";
-    resultadoElem.style.transform = "scale(1.3)";
+    resultadoElem.textContent = `❌ Incorrecto. Era: ${fraseActual.personaje}`;
+    resultadoElem.style.color = 'red';
+    resultadoElem.style.transform = 'scale(1.02)';
   }
-  setTimeout(() => {
-    resultadoElem.style.transform = "scale(1)";
-    mostrarFrase();
-  }, 2000);
+  setTimeout(() => { resultadoElem.style.transform='scale(1)'; mostrarFrase(); }, 1400);
 }
 mostrarFrase();
 
-/* --- Juego 2: Memoria --- */
+/* ---------- Juego 2: Memoria (más cartas, tiempo limitado) ---------- */
 const memoriaContainer = document.getElementById('memoria');
 const memoriaResultado = document.getElementById('memoriaResultado');
 const timer2 = document.getElementById('timer2');
-const items = ['👑','🐇','🫖','🎩','🐛','😼','🕰️','🍄','👑','🐇','🫖','🎩','🐛','😼','🕰️','🍄'];
-let firstCard=null, secondCard=null, lock=false, matches=0, tiempo2=45, cronometro2;
+const icons = ['👑','🐇','🫖','🎩','🐛','😼','🕰️','🍄']; // 8 pares -> 16 cartas
+let cards = [];
+let firstCard=null, secondCard=null, lock=false, matches=0, tiempo2=55, cronometro2=null;
 
-function crearTablero() {
+function crearTablero(){
   memoriaContainer.innerHTML = '';
-  const shuffled = items.sort(() => 0.5 - Math.random());
-  shuffled.forEach(i=>{
-    const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.valor = i;
-    card.textContent = i;
-    card.addEventListener('click', voltearCarta);
-    memoriaContainer.appendChild(card);
+  cards = [...icons, ...icons].sort(()=>0.5-Math.random());
+  cards.forEach(icon => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.textContent = icon;
+    c.dataset.valor = icon;
+    c.addEventListener('click', voltearCarta);
+    memoriaContainer.appendChild(c);
   });
-  matches=0;
-  tiempo2=45;
+  matches = 0;
+  tiempo2 = 55; // un poco más de tiempo
   timer2.textContent = `⏳ Tiempo: ${tiempo2}s`;
+  memoriaResultado.textContent = '';
   clearInterval(cronometro2);
   cronometro2 = setInterval(()=>{
     tiempo2--;
     timer2.textContent = `⏳ Tiempo: ${tiempo2}s`;
-    if(tiempo2<=0){
+    if (tiempo2<=0){
       clearInterval(cronometro2);
-      memoriaResultado.textContent = "💥 Se acabó el tiempo 😿";
-      memoriaResultado.style.color = "red";
+      memoriaResultado.textContent = '⏳ ¡Se acabó el tiempo! Intenta otra vez.';
+      memoriaResultado.style.color = 'red';
       bloquearCartas();
     }
   },1000);
 }
-
-function voltearCarta() {
+function voltearCarta(){
   if (lock || this.classList.contains('flipped')) return;
   this.classList.add('flipped');
-  if (!firstCard) { firstCard=this; return; }
-  secondCard=this;
-  lock=true;
-  if (firstCard.dataset.valor===secondCard.dataset.valor) {
+  if (!firstCard){ firstCard = this; return; }
+  secondCard = this; lock = true;
+  if (firstCard.dataset.valor === secondCard.dataset.valor){
     matches++;
-    resetear();
-    if (matches===items.length/2){
+    firstCard.classList.add('matched');
+    secondCard.classList.add('matched');
+    firstCard.style.pointerEvents = 'none';
+    secondCard.style.pointerEvents = 'none';
+    resetCards();
+    if (matches === cards.length/2){
       clearInterval(cronometro2);
-      memoriaResultado.textContent = "🎉 ¡Ganaste el juego de memoria!";
-      memoriaResultado.style.color = "green";
+      memoriaResultado.textContent = '🎉 ¡Ganaste el juego de memoria!';
+      memoriaResultado.style.color = 'green';
       lanzarParticulas(memoriaContainer);
     }
   } else {
     setTimeout(()=>{
       firstCard.classList.remove('flipped');
       secondCard.classList.remove('flipped');
-      resetear();
-    },800);
+      resetCards();
+    },700);
   }
 }
-
-function resetear(){ [firstCard,secondCard]=[null,null]; lock=false; }
+function resetCards(){ [firstCard, secondCard] = [null, null]; lock = false; }
 function bloquearCartas(){ document.querySelectorAll('.card').forEach(c=>c.style.pointerEvents='none'); }
-
 crearTablero();
 
-/* --- Juego 3: Laberinto --- */
+/* ---------- Juego 3: Laberinto difícil (25x25 con DFS carve) ---------- */
 const canvas = document.getElementById('maze');
 const ctx = canvas.getContext('2d');
-const cols=15, rows=15, cellSize=20;
-canvas.width=cols*cellSize;
-canvas.height=rows*cellSize;
+const cols = 25, rows = 25, cellSize = 18;
+canvas.width = cols * cellSize;
+canvas.height = rows * cellSize;
 let maze = [];
-let player={x:0,y:0};
-const exit={x:cols-1,y:rows-1};
+let player = { x: 0, y: 0 };
+const exit = { x: cols - 1, y: rows - 1 };
 
 function generarLaberinto(){
-  maze = Array.from({length:rows},()=>Array(cols).fill(0));
-  for(let y=0;y<rows;y++){
-    for(let x=0;x<cols;x++){
-      if(Math.random()<0.25 && !(x===0 && y===0) && !(x===exit.x && y===exit.y)){
-        maze[y][x]=1;
+  // Iniciamos lleno de muros (1) y haremos carve (0) con DFS en celdas de paso (espaciado de 2)
+  maze = Array.from({length: rows}, () => Array(cols).fill(1));
+  function carve(px, py){
+    maze[py][px] = 0;
+    const dirs = [[0,2],[0,-2],[2,0],[-2,0]].sort(()=>Math.random()-0.5);
+    for (const [dx,dy] of dirs){
+      const nx = px + dx, ny = py + dy;
+      if (nx > 0 && ny > 0 && nx < cols && ny < rows && maze[ny][nx] === 1){
+        maze[py + dy/2][px + dx/2] = 0;
+        carve(nx, ny);
       }
     }
+  }
+  // Escogemos un start que sea par para que carve funcione
+  carve(0,0);
+  // Aseguramos que la salida y entrada sean caminos
+  maze[0][0] = 0;
+  maze[exit.y][exit.x] = 0;
+  // opcional: añadir algunos huecos extra aleatorios para más caminos
+  for(let i=0;i< Math.floor((cols*rows)*0.03); i++){
+    const rx = Math.floor(Math.random()*cols), ry = Math.floor(Math.random()*rows);
+    maze[ry][rx] = 0;
   }
 }
 
 function dibujarLaberinto(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  for(let y=0;y<rows;y++){
-    for(let x=0;x<cols;x++){
-      ctx.fillStyle = maze[y][x]===1 ? '#6a1b9a' : '#fff';
-      ctx.fillRect(x*cellSize,y*cellSize,cellSize,cellSize);
+  for (let y=0; y<rows; y++){
+    for (let x=0; x<cols; x++){
+      ctx.fillStyle = maze[y][x] === 1 ? '#6a1b9a' : '#ffffff';
+      ctx.fillRect(x*cellSize, y*cellSize, cellSize, cellSize);
     }
   }
-  ctx.fillStyle='green';
+  // Salida
+  ctx.fillStyle = '#4caf50';
   ctx.fillRect(exit.x*cellSize, exit.y*cellSize, cellSize, cellSize);
-  ctx.fillStyle='yellow';
-  ctx.fillRect(player.x*cellSize, player.y*cellSize, cellSize, cellSize);
+  // Jugador (dibujado con pequeño padding para que parezca un personaje)
+  ctx.fillStyle = '#ffeb3b';
+  ctx.fillRect(player.x*cellSize + 3, player.y*cellSize + 3, cellSize - 6, cellSize - 6);
 }
 
-function mover(dx,dy){
-  const nx=player.x+dx, ny=player.y+dy;
-  if(nx<0||nx>=cols||ny<0||ny>=rows) return;
-  if(maze[ny][nx]===1) return;
-  player.x=nx; player.y=ny;
+function mover(dx, dy){
+  const nx = player.x + dx, ny = player.y + dy;
+  if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) return;
+  if (maze[ny][nx] === 1) return;
+  player.x = nx; player.y = ny;
   dibujarLaberinto();
-  if(nx===exit.x && ny===exit.y){
-    setTimeout(()=>{
+  if (player.x === exit.x && player.y === exit.y){
+    setTimeout(()=> {
       lanzarParticulas(canvas);
-      alert("🎉 ¡Alicia escapó del laberinto!");
-      player={x:0,y:0};
+      alert('🎉 ¡Alicia escapó del laberinto difícil!');
+      player = { x: 0, y: 0 };
       generarLaberinto();
       dibujarLaberinto();
-    },100);
+    }, 120);
   }
 }
 
-window.addEventListener('keydown', e=>{
-  if(e.key==='ArrowUp') mover(0,-1);
-  if(e.key==='ArrowDown') mover(0,1);
-  if(e.key==='ArrowLeft') mover(-1,0);
-  if(e.key==='ArrowRight') mover(1,0);
+window.addEventListener('keydown', (e) => {
+  if (!mundoIlogico.classList.contains('active')) return; // movimiento solo cuando ilógico visible (opcional)
+  switch(e.key){
+    case 'ArrowUp': mover(0,-1); break;
+    case 'ArrowDown': mover(0,1); break;
+    case 'ArrowLeft': mover(-1,0); break;
+    case 'ArrowRight': mover(1,0); break;
+  }
 });
 
 generarLaberinto();
 dibujarLaberinto();
 
-/* --- Partículas --- */
+/* ---------- Partículas ---------- */
 function lanzarParticulas(elem){
   const rect = elem.getBoundingClientRect();
-  for(let i=0;i<20;i++){
-    const p=document.createElement('div');
-    p.classList.add('particle');
-    p.style.width=p.style.height=Math.random()*8+5+'px';
-    p.style.background=`hsl(${Math.random()*360},100%,50%)`;
-    p.style.left=rect.left+rect.width/2+'px';
-    p.style.top=rect.top+rect.height/2+'px';
-    p.style.transform=`translate(${(Math.random()-0.5)*300}px,${(Math.random()-0.5)*200}px)`;
+  for (let i=0; i<26; i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*10 + 6;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = (rect.left + rect.width/2 + (Math.random()-0.5)*60) + 'px';
+    p.style.top = (rect.top + rect.height/2 + (Math.random()-0.5)*30) + 'px';
+    p.style.background = `hsl(${Math.random()*360}, 90%, ${50 + Math.random()*10}%)`;
     document.body.appendChild(p);
-    setTimeout(()=>p.remove(),2000);
+    // animación con desplazamiento aleatorio
+    const tx = (Math.random()-0.5) * 320;
+    const ty = - (100 + Math.random()*220);
+    p.animate([
+      { transform: 'translate(0,0) scale(1)', opacity: 1 },
+      { transform: `translate(${tx}px, ${ty}px) scale(0.5)`, opacity: 0 }
+    ], { duration: 1200 + Math.random()*800, easing: 'cubic-bezier(.2,.8,.2,1)' });
+    setTimeout(()=> p.remove(), 2200);
   }
 }
+
+/* ---------- Opcional: reiniciar juegos con teclas o botones ---------- */
+/* Puedes añadir botones para reiniciar si quieres; por ahora ya se regeneran automáticamente al ganar/terminar. */
+
 </script>
 </body>
 </html>
