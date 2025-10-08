@@ -2,79 +2,52 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alicia en el País de las Maravillas</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Alicia - Laberintos</title>
 <style>
-  body {
-    background: linear-gradient(to bottom, #a8e6cf, #dcedc1);
-    font-family: 'Trebuchet MS', sans-serif;
-    text-align: center;
-    overflow: hidden;
-  }
-  h1 { margin-top: 20px; color: #333; }
-  .menu, .mundo, .juegos, .laberinto-container { display: none; }
-  .activo { display: block; }
-
-  button {
-    padding: 12px 20px;
-    margin: 10px;
-    font-size: 18px;
-    cursor: pointer;
-    border-radius: 12px;
-    border: none;
-    background: #ffb6b9;
-    transition: transform 0.3s, background 0.3s;
-  }
-  button:hover { background: #ff8c94; transform: scale(1.1); }
-
-  .laberinto {
-    display: grid;
-    margin: 20px auto;
-    background: #222;
-    border: 5px solid #555;
-    gap: 2px;
-  }
-  .celda {
-    width: 25px;
-    height: 25px;
-    background: #eee;
-  }
-  .pared { background: #333; }
-  .jugador { background: #4CAF50; }
-  .meta { background: gold; }
-
-  .volver { background: #b5ead7; margin-top: 20px; }
+  body { background: linear-gradient(to bottom,#a8e6cf,#dcedc1); font-family: 'Trebuchet MS', sans-serif; text-align:center; overflow:hidden; }
+  h1{ margin-top:20px;color:#333; }
+  .menu,.mundo,.juegos,.laberinto-container{ display:none; }
+  .activo{ display:block; }
+  button{ padding:12px 20px; margin:10px; font-size:18px; cursor:pointer; border-radius:12px; border:none; background:#ffb6b9; transition:transform .25s; }
+  button:hover{ transform:scale(1.06); background:#ff8c94; }
+  .laberinto{ display:grid; margin:18px auto; background:#222; border:5px solid #555; gap:2px; }
+  .celda{ width:25px; height:25px; background:#eee; }
+  .pared{ background:#333; }
+  .jugador{ background:#4CAF50; }
+  .meta{ background:gold; }
+  .volver{ background:#b5ead7; margin-top:20px; }
+  @media (max-width:700px){ .celda{ width:18px; height:18px; } }
 </style>
 </head>
 <body>
-
 <h1>🌟 Alicia en el País de las Maravillas 🌟</h1>
 
-<!-- 🏠 MENÚ PRINCIPAL -->
-<div class="menu activo" id="menu">
+<!-- MENÚ -->
+<div id="menu" class="menu activo">
   <button onclick="mostrarSeccion('mundoLogico')">🌿 Mundo Lógico</button>
   <button onclick="mostrarSeccion('mundoIlogico')">🌀 Mundo Ilógico</button>
   <button onclick="mostrarSeccion('juegos')">🎮 Juegos</button>
 </div>
 
-<!-- 🌿 MUNDO LÓGICO -->
-<div class="mundo" id="mundoLogico">
+<!-- MUNDO LÓGICO -->
+<div id="mundoLogico" class="mundo">
   <h2>🌿 Mundo Lógico</h2>
-  <p>Aquí todo tiene sentido… o casi 😉</p>
-  <p><b>Dato curioso:</b> El sombrerero loco se basa en un personaje real del siglo XIX.</p>
+  <p>Aquí todo tiene sentido…</p>
+  <p><b>Dato curioso:</b> En la versión clásica, Alicia simboliza la razón frente al caos.</p>
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🌀 MUNDO ILÓGICO -->
-<div class="mundo" id="mundoIlogico">
+<!-- MUNDO ILÓGICO -->
+<div id="mundoIlogico" class="mundo">
   <h2>🌀 Mundo Ilógico</h2>
-  <p>“El tiempo corre al revés y las flores hablan.” 🌸⏳</p>
-  <p><b>Dato curioso:</b> Lewis Carroll era matemático, por eso hay acertijos escondidos en el libro.</p>
+  <p>Las reglas cambian aquí.</p>
+  <p><b>Dato curioso:</b> Lewis Carroll era matemático; hay muchos acertijos escondidos.</p>
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🎮 JUEGOS -->
-<div class="juegos" id="juegos">
+<!-- JUEGOS -->
+<div id="juegos" class="juegos">
   <h2>🎮 Juegos</h2>
   <button onclick="iniciarLaberinto('facil')">Laberinto Fácil</button>
   <button onclick="iniciarLaberinto('medio')">Laberinto Medio</button>
@@ -83,96 +56,125 @@
   <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
 </div>
 
-<!-- 🧭 LABERINTO -->
-<div class="laberinto-container" id="laberintoContainer">
+<!-- LABERINTO -->
+<div id="laberintoContainer" class="laberinto-container">
   <h2 id="tituloLaberinto"></h2>
   <div id="laberinto" class="laberinto"></div>
   <button class="volver" onclick="mostrarSeccion('juegos')">Volver a Juegos</button>
 </div>
 
 <script>
-let jugador = { x: 0, y: 0 };
-let meta = { x: 0, y: 0 };
-let mapa = [];
-let tamaño = 10;
-
-function mostrarSeccion(id) {
-  document.querySelectorAll('.menu, .mundo, .juegos, .laberinto-container')
-    .forEach(s => s.classList.remove('activo'));
+/* ----- Navegación ----- */
+function mostrarSeccion(id){
+  document.querySelectorAll('.menu,.mundo,.juegos,.laberinto-container').forEach(s=>s.classList.remove('activo'));
   document.getElementById(id).classList.add('activo');
 }
 
-function generarLaberinto(nivel) {
+/* ----- Variables globales ----- */
+let jugador = { x:0, y:0 };
+let meta = { x:0, y:0 };
+let mapa = [];
+let tamaño = 10;
+let cellPx = 25; // tamaño de la celda en px (cambiable con CSS responsivo)
+
+/* ----- Generación de laberinto aleatorio + garantía de salida ----- */
+function generarLaberinto(nivel){
   if(nivel === 'facil') tamaño = 10;
-  if(nivel === 'medio') tamaño = 15;
-  if(nivel === 'dificil') tamaño = 20;
-  if(nivel === 'imposible') tamaño = 25;
+  else if(nivel === 'medio') tamaño = 15;
+  else if(nivel === 'dificil') tamaño = 20;
+  else tamaño = 25; // imposible
 
-  mapa = Array.from({ length: tamaño }, () =>
-    Array.from({ length: tamaño }, () => Math.random() < 0.3 ? 1 : 0)
-  );
+  // inicial - 1 = pared, 0 = camino
+  mapa = Array.from({length:tamaño}, ()=> Array.from({length:tamaño}, ()=> Math.random() < (nivel==='facil'?0.18:(nivel==='medio'?0.28:(nivel==='dificil'?0.36:0.46)))?1:0 ));
 
-  // 🟢 Posición inicial y meta garantizadas como camino
-  jugador = { x: 0, y: 0 };
+  jugador = { x:0, y:0 };
   meta = { x: tamaño - 1, y: tamaño - 1 };
   mapa[jugador.y][jugador.x] = 0;
   mapa[meta.y][meta.x] = 0;
-}
 
-function dibujarLaberinto() {
-  const contenedor = document.getElementById('laberinto');
-  contenedor.innerHTML = '';
-  contenedor.style.gridTemplateColumns = `repeat(${tamaño}, 25px)`;
+  // Comprobar conectividad; si no hay camino, crear uno garantizado (carving simple con pasos)
+  if(!pathExists()){
+    carveGuaranteedPath();
+  }
 
-  mapa.forEach((fila, y) => {
-    fila.forEach((celda, x) => {
-      const div = document.createElement('div');
-      div.classList.add('celda');
-      if (celda === 1) div.classList.add('pared');
-      if (jugador.x === x && jugador.y === y) div.classList.add('jugador');
-      if (meta.x === x && meta.y === y) div.classList.add('meta');
-      contenedor.appendChild(div);
-    });
+  // Aseguramos que la salida no quede totalmente rodeada (abrimos vecinos aleatorios)
+  const neighbors = [[-1,0],[1,0],[0,-1],[0,1]];
+  neighbors.forEach(([dx,dy])=>{
+    const nx = meta.x + dx, ny = meta.y + dy;
+    if(nx>=0 && ny>=0 && nx<tamaño && ny<tamaño && Math.random() < 0.5) mapa[ny][nx] = 0;
   });
 }
 
-function iniciarLaberinto(nivel) {
-  generarLaberinto(nivel);
-  document.getElementById('tituloLaberinto').textContent = 
-    `🧭 Nivel: ${nivel.toUpperCase()}`;
-  dibujarLaberinto();
-  mostrarSeccion('laberintoContainer');
-}
-
-// 🕹️ Movimiento con flechas
-document.addEventListener('keydown', e => {
-  if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
-  e.preventDefault(); // ✨ evita scroll
-
-  let nuevoX = jugador.x;
-  let nuevoY = jugador.y;
-
-  if (e.key === 'ArrowUp') nuevoY--;
-  if (e.key === 'ArrowDown') nuevoY++;
-  if (e.key === 'ArrowLeft') nuevoX--;
-  if (e.key === 'ArrowRight') nuevoX++;
-
-  // Validar límites y paredes
-  if (nuevoX >= 0 && nuevoX < tamaño && nuevoY >= 0 && nuevoY < tamaño && mapa[nuevoY][nuevoX] === 0) {
-    jugador.x = nuevoX;
-    jugador.y = nuevoY;
-    dibujarLaberinto();
-
-    if (jugador.x === meta.x && jugador.y === meta.y) {
-      setTimeout(()=>{
-        alert('🎉 ¡Nivel completado!');
-        mostrarSeccion('juegos');
-      },100);
+/* ----- BFS para comprobar si existe camino ----- */
+function pathExists(){
+  const vis = Array.from({length:tamaño}, ()=> Array(tamaño).fill(false));
+  const q = [];
+  q.push([jugador.x, jugador.y]);
+  vis[jugador.y][jugador.x] = true;
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  while(q.length){
+    const [cx,cy] = q.shift();
+    if(cx === meta.x && cy === meta.y) return true;
+    for(const [dx,dy] of dirs){
+      const nx = cx + dx, ny = cy + dy;
+      if(nx>=0 && ny>=0 && nx<tamaño && ny<tamaño && !vis[ny][nx] && mapa[ny][nx] === 0){
+        vis[ny][nx] = true;
+        q.push([nx,ny]);
+      }
     }
   }
-});
-</script>
-</body>
-</html>
+  return false;
+}
 
+/* ----- Crear un camino garantizado desde inicio hasta meta (con ligeros giros aleatorios) ----- */
+function carveGuaranteedPath(){
+  let cx = 0, cy = 0;
+  mapa[cy][cx] = 0;
+  while(cx !== meta.x || cy !== meta.y){
+    // decidir si avanzar en X o Y preferente hacia la meta
+    const dx = meta.x - cx;
+    const dy = meta.y - cy;
+    const canMoveX = dx !== 0;
+    const canMoveY = dy !== 0;
 
+    // Dar preferencia aleatoria para hacer curvas
+    let moveHoriz;
+    if(canMoveX && canMoveY){
+      moveHoriz = Math.random() < 0.5;
+    } else if(canMoveX) moveHoriz = true;
+    else moveHoriz = false;
+
+    if(moveHoriz){
+      cx += dx > 0 ? 1 : -1;
+    } else {
+      cy += dy > 0 ? 1 : -1;
+    }
+    // abrir celda actual
+    mapa[cy][cx] = 0;
+
+    // ocasionalmente abrir una celda lateral para hacer el laberinto menos lineal
+    if(Math.random() < 0.25){
+      const lateralDirs = [[0,1],[0,-1],[1,0],[-1,0]];
+      const [ldx, ldy] = lateralDirs[Math.floor(Math.random()*lateralDirs.length)];
+      const lx = cx + ldx, ly = cy + ldy;
+      if(lx>=0 && ly>=0 && lx<tamaño && ly<tamaño){
+        mapa[ly][lx] = 0;
+      }
+    }
+  }
+  // garantee neighbors open near start too
+  if(tamaño>2){
+    mapa[0][1] = 0;
+    mapa[1][0] = 0;
+  }
+}
+
+/* ----- Dibujar laberinto en DOM ----- */
+function dibujarLaberinto(){
+  const cont = document.getElementById('laberinto');
+  cont.innerHTML = '';
+  // ajustar tamaño de celda según ancho disponible para que no rompa layout en móviles
+  const availableWidth = Math.min(window.innerWidth - 40, window.innerHeight - 200);
+  const px = Math.max(12, Math.floor(availableWidth / tamaño) );
+  cont.style.gridTemplateColumns = `repeat(${tamaño}, ${px}px)`;
+  cont.style.width = (px * tamaño + (tamaño-1)*2) + 'px';
