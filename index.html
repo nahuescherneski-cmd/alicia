@@ -1,264 +1,116 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pac-Alicia — Pac‑Man versión Alicia en el País de las Maravillas</title>
+  <meta charset="UTF-8">
+  <title>Alicia en el País de las Maravillas</title>
   <style>
-    :root{--bg:#0b1220;--alice:#f8c8e6;--rabbit:#ffd27f;--ghost:#8ad3ff;--wall:#2b2f3a;--pellet:#ffe3a1}
-    html,body{height:100%;margin:0;font-family:Arial, Helvetica, sans-serif;background:var(--bg);color:#eee}
-    .wrap{display:flex;flex-direction:column;align-items:center;padding:18px}
-    h1{margin:6px 0 12px;font-weight:700}
-    canvas{background:linear-gradient(180deg,#061020 0%, #072433 100%);border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.6)}
-    .hud{display:flex;gap:12px;margin:10px 0;align-items:center}
-    .hud div{background:rgba(255,255,255,0.04);padding:8px 12px;border-radius:8px}
-    .controls{font-size:13px;color:#cfeefc;margin-top:10px}
-    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(2,6,10,0.6);z-index:50}
-    .card{background:#071428;color:#fff;padding:18px;border-radius:12px;min-width:320px;max-width:720px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-    .card h2{margin:0 0 12px}
-    .options{display:flex;flex-direction:column;gap:8px}
-    .option{padding:10px;border-radius:8px;background:rgba(255,255,255,0.03);cursor:pointer;border:1px solid rgba(255,255,255,0.04)}
-    .option:hover{background:rgba(255,255,255,0.06)}
-    .small{font-size:13px;color:#b8d8f0}
-    footer{margin-top:12px;font-size:13px;color:#a8cfe6}
-    @media (max-width:520px){canvas{width:320px;height:320px}} 
+    body {
+      font-family: 'Georgia', serif;
+      margin: 0;
+      padding: 0;
+      background-color: #fefae0;
+    }
+
+    header {
+      background-color: #7ec8e3;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    section {
+      padding: 40px;
+      text-align: center;
+    }
+
+    img {
+      width: 70%;
+      max-width: 500px;
+      margin: 20px 0;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .logico {
+      background-color: #e0f7fa;
+      color: #004d40;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .ilogico {
+      background-color: #ffebf0;
+      color: #6a1b9a;
+      transform: rotate(-0.5deg);
+      font-style: italic;
+      animation: parpadeo 4s infinite alternate;
+    }
+
+    .frase-ilogica {
+      font-weight: bold;
+      animation: giroLoco 6s infinite linear;
+    }
+
+    @keyframes parpadeo {
+      0% { background-color: #ffe0f0; }
+      100% { background-color: #ffccf5; }
+    }
+
+    @keyframes giroLoco {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
+      100% { transform: rotate(-2deg); }
+    }
+
+    footer {
+      background-color: #7ec8e3;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Pac‑Alicia — Alicia en el País de las Maravillas</h1>
-    <div class="hud">
-      <div>Vidas: <span id="lives">3</span></div>
-      <div>Puntos: <span id="score">0</span></div>
-      <div>Nivel: <span id="level">1</span></div>
-    </div>
-    <canvas id="game" width="560" height="560"></canvas>
-    <div class="controls">Usa las flechas o WASD para mover a Alicia. Si pierdes, responde una pregunta sobre la película para seguir jugando.</div>
-  </div>
 
-  <div id="overlay" class="overlay">
-    <div class="card">
-      <h2 id="q-title">Pregunta</h2>
-      <p class="small" id="q-sub">Responde correctamente para continuar.</p>
-      <div id="options" class="options"></div>
-      <footer id="q-foot">Acierta para revivir a Alicia.</footer>
-    </div>
-  </div>
+  <!-- Música de fondo -->
+  <audio autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
 
-  <script>
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d');
-  const TILE = 28; 
-  const ROWS = 20; 
-  const COLS = 20;
+  <header>
+    <h1>Alicia en el País de las Maravillas</h1>
+    <p>Un viaje entre el mundo lógico y el mundo ilógico</p>
+  </header>
 
-  let scoreEl = document.getElementById('score');
-  let livesEl = document.getElementById('lives');
-  let levelEl = document.getElementById('level');
-  const overlay = document.getElementById('overlay');
-  const qTitle = document.getElementById('q-title');
-  const optionsDiv = document.getElementById('options');
+  <section class="logico">
+    <h2>🌿 Mundo Lógico</h2>
+    <img src="https://cdn.pixabay.com/photo/2021/07/08/15/56/alice-6397871_1280.jpg" alt="Alicia en el mundo lógico">
+    <p>
+      En el mundo lógico, todo tiene una causa y una consecuencia.
+      Alicia sigue reglas, entiende el tiempo, y vive en un entorno estructurado y coherente.
+    </p>
+    <ul>
+      <li>El té se toma a las cinco</li>
+      <li>Los relojes funcionan bien</li>
+      <li>Las palabras significan lo que deben</li>
+    </ul>
+  </section>
 
-  const questions = [
-    {q:'¿Cómo se llama la protagonista?', a:['Alicia','Ariana','Marta','María'], correct:0},
-    {q:'¿Qué personaje siempre llega tarde?', a:['El Sombrerero Loco','El Conejo Blanco','La Reina de Corazones','El Gato de Cheshire'], correct:1},
-    {q:'¿Qué grita la Reina?', a:['¡Corten la torta!','¡Que le corten la cabeza!','¡Fuera de aquí!','¡Viva la reina!'], correct:1},
-    {q:'¿Quién sonríe y desaparece dejando solo su sonrisa?', a:['La Oruga','El Conejo','El Gato de Cheshire','Alicia'], correct:2},
-    {q:'¿Qué come Alicia para cambiar de tamaño?', a:['Seta','Té','Pastel','Manzana'], correct:0},
-    {q:'¿Qué animal organiza la carrera loca?', a:['El Pato','El Dodo','El Loro','El Conejo'], correct:1},
-    {q:'¿Quién celebra un “no cumpleaños”?', a:['El Gato de Cheshire','El Sombrerero Loco y la Liebre','La Reina','El Conejo Blanco'], correct:1},
-    {q:'¿Qué fuma la oruga azul?', a:['Cigarro','Pipa de agua','Cachimba','Narguile'], correct:3},
-    {q:'¿De qué color son las rosas que pintan los jardineros?', a:['Rojas','Blancas','Negras','Azules'], correct:1},
-    {q:'¿Cómo se llama el gato que ayuda a Alicia?', a:['Michi','Felix','Cheshire','Tom'], correct:2}
-  ];
+  <section class="ilogico">
+    <h2>🎩 Mundo Ilógico</h2>
+    <img src="https://cdn.pixabay.com/photo/2021/07/08/15/54/alice-6397868_1280.jpg" alt="Alicia en el mundo ilógico">
+    <p>
+      Aquí, el conejo llega tarde, las flores hablan y el gato desaparece sonriendo.
+      Nada tiene sentido, y las reglas cambian a cada momento.
+    </p>
+    <p class="frase-ilogica">“¿Quién eres tú?” preguntó la oruga mientras fumaba en espiral.</p>
+    <p class="frase-ilogica">“¡Córtenle la cabeza!” gritó la Reina sin razón aparente.</p>
+    <p class="frase-ilogica">El reloj corre hacia atrás y el tiempo toma el té.</p>
+  </section>
 
-  const map = [];
+  <footer>
+    <p>&copy; 2025 - Alicia en el País de las Maravillas</p>
+  </footer>
 
-  function createMap(){
-    for(let r=0;r<ROWS;r++){
-      map[r]=[];
-      for(let c=0;c<COLS;c++){
-        if(r===0||c===0||r===ROWS-1||c===COLS-1) map[r][c]=1;
-        else if((r%2===0)&&(c%2===0)) map[r][c]=1; 
-        else if(Math.random()<0.2) map[r][c]=1; // más paredes aleatorias para hacerlo cerrado
-        else map[r][c]=0;
-      }
-    }
-    for(let i=2;i<ROWS-2;i++){
-      map[i][Math.floor(COLS/2)]=0;
-    }
-    for(let r=8;r<12;r++)for(let c=8;c<12;c++)map[r][c]=0;
-  }
-
-  createMap();
-
-  const player = {x:1,y:1,dir:{x:0,y:0},nextDir:null,radius:12,color:'#f8c8e6'}; 
-  const ghosts = [];
-
-  function addGhost(x,y,color){
-    ghosts.push({x,y,dir:{x:0,y:0},speed:0.06,color});
-  }
-
-  addGhost(COLS-2,1,'#ff7aa2');
-  addGhost(1,ROWS-2,'#8ad3ff');
-  addGhost(COLS-2,ROWS-2,'#b39cff');
-
-  let score=0; let lives=3; let level=1; let pelletsRemaining=0;
-
-  function countPellets(){
-    let c=0;for(let r=0;r<ROWS;r++)for(let col=0;col<COLS;col++)if(map[r][col]===0)c++;return c;
-  }
-
-  pelletsRemaining = countPellets();
-
-  const keys = {};
-  window.addEventListener('keydown',e=>{keys[e.key]=true;handleKey(e.key);});
-  window.addEventListener('keyup',e=>{keys[e.key]=false;});
-
-  function handleKey(k){
-    if(['ArrowUp','w','W'].includes(k)) player.nextDir={x:0,y:-1};
-    if(['ArrowDown','s','S'].includes(k)) player.nextDir={x:0,y:1};
-    if(['ArrowLeft','a','A'].includes(k)) player.nextDir={x:-1,y:0};
-    if(['ArrowRight','d','D'].includes(k)) player.nextDir={x:1,y:0};
-  }
-
-  function canMove(x,y){
-    if(x<0||y<0||x>=COLS||y>=ROWS) return false;
-    return map[Math.floor(y)][Math.floor(x)]!==1;
-  }
-
-  function updatePlayer(dt){
-    const speed = 6.0; 
-    if(player.nextDir){
-      const nx = player.x + player.nextDir.x*0.2; 
-      const ny = player.y + player.nextDir.y*0.2;
-      if(canMove(Math.floor(nx+0.5), Math.floor(ny+0.5))){
-        player.dir = player.nextDir; player.nextDir=null;
-      }
-    }
-    const newX = player.x + player.dir.x * speed * dt;
-    const newY = player.y + player.dir.y * speed * dt;
-    if(canMove(Math.floor(newX+0.5), Math.floor(newY+0.5))){
-      player.x=newX; player.y=newY;
-    }
-    const px=Math.floor(player.x+0.5), py=Math.floor(player.y+0.5);
-    if(map[py] && map[py][px]===0){
-      map[py][px]=2; score+=10; pelletsRemaining--; scoreEl.textContent=score; 
-      if(pelletsRemaining<=0){ nextLevel(); }
-    }
-  }
-
-  function nextLevel(){
-    level++; levelEl.textContent=level; resetLevel();
-  }
-
-  function resetLevel(){
-    createMap(); pelletsRemaining=countPellets();
-    player.x=1;player.y=1;player.dir={x:0,y:0};
-    ghosts.length=0; addGhost(COLS-2,1,'#ff7aa2'); addGhost(1,ROWS-2,'#8ad3ff'); addGhost(COLS-2,ROWS-2,'#b39cff');
-  }
-
-  function updateGhosts(dt){
-    ghosts.forEach(g=>{
-      const dx = player.x - g.x;
-      const dy = player.y - g.y;
-      const mag = Math.sqrt(dx*dx+dy*dy)||1;
-      const dir = {x:dx/mag,y:dy/mag};
-      const gs = 2.8 + level*0.5;
-      const nx = g.x + dir.x * gs * dt;
-      const ny = g.y + dir.y * gs * dt;
-      if(canMove(Math.floor(nx+0.5), Math.floor(ny+0.5))){ g.x=nx; g.y=ny; }
-    });
-  }
-
-  function checkCollisions(){
-    for(let i=0;i<ghosts.length;i++){
-      const g=ghosts[i];
-      const dx = (g.x - player.x);
-      const dy = (g.y - player.y);
-      const dist = Math.sqrt(dx*dx+dy*dy);
-      if(dist < 0.6){
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    for(let r=0;r<ROWS;r++){
-      for(let c=0;c<COLS;c++){
-        const x=c*TILE, y=r*TILE;
-        if(map[r][c]===1){
-          ctx.fillStyle = '#223044'; ctx.fillRect(x+2,y+2,TILE-4,TILE-4);
-        } else if(map[r][c]===0){
-          ctx.beginPath(); ctx.fillStyle='rgba(255,210,150,0.95)'; ctx.arc(x+TILE/2,y+TILE/2,4,0,Math.PI*2); ctx.fill();
-        }
-      }
-    }
-    const px = player.x * TILE; const py = player.y * TILE;
-    ctx.beginPath(); ctx.fillStyle=player.color; ctx.arc(px,py,player.radius,0,Math.PI*2); ctx.fill();
-    ctx.beginPath(); ctx.fillStyle='#4b2d6b'; ctx.arc(px+6,py-4,3,0,Math.PI*2); ctx.fill();
-    ghosts.forEach(g=>{
-      const gx = g.x * TILE; const gy = g.y * TILE;
-      ctx.beginPath(); ctx.fillStyle = g.color; ctx.arc(gx,gy,14,Math.PI,0); ctx.lineTo(gx+14,gy+12); ctx.lineTo(gx-14,gy+12); ctx.closePath(); ctx.fill();
-      ctx.beginPath(); ctx.fillStyle='#fff'; ctx.arc(gx-6,gy-2,4,0,Math.PI*2); ctx.arc(gx+6,gy-2,4,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.fillStyle='#000'; ctx.arc(gx-6,gy-2,2,0,Math.PI*2); ctx.arc(gx+6,gy-2,2,0,Math.PI*2); ctx.fill();
-    });
-  }
-
-  let last = performance.now(); let paused=false; let awaitingQuestion=false; 
-
-  function gameLoop(t){
-    const dt = Math.min(0.05,(t-last)/1000); last=t; if(!paused){
-      updatePlayer(dt); updateGhosts(dt);
-      if(checkCollisions()){ handlePlayerDeath(); }
-      draw();
-    }
-    requestAnimationFrame(gameLoop);
-  }
-
-  function handlePlayerDeath(){
-    if(awaitingQuestion) return; 
-    paused=true; awaitingQuestion=true;
-    showQuestion().then(correct=>{
-      awaitingQuestion=false;
-      if(correct){
-        player.x=1;player.y=1;player.dir={x:0,y:0};
-        paused=false;
-      } else {
-        lives--; livesEl.textContent=lives; 
-        if(lives<=0){ resetGame(); }
-        else{
-          player.x=1;player.y=1;player.dir={x:0,y:0}; paused=false;
-        }
-      }
-    });
-  }
-
-  function resetGame(){
-    score=0;scoreEl.textContent=score; lives=3;livesEl.textContent=lives; level=1;levelEl.textContent=level; resetLevel(); paused=false;
-  }
-
-  function showQuestion(){
-    return new Promise(resolve=>{
-      const q = questions[Math.floor(Math.random()*questions.length)];
-      qTitle.textContent = q.q; optionsDiv.innerHTML=''; overlay.style.display='flex';
-      q.a.forEach((opt,i)=>{
-        const d=document.createElement('div'); d.className='option'; d.textContent=opt; d.addEventListener('click',()=>{
-          overlay.style.display='none';
-          const correct = (i===q.correct);
-          if(correct){
-            score+=50; scoreEl.textContent=score;
-          }
-          resolve(correct);
-        }); optionsDiv.appendChild(d);
-      });
-    });
-  }
-
-  resetGame(); requestAnimationFrame(gameLoop);
-  canvas.addEventListener('click',()=>{paused=!paused});
-  </script>
 </body>
 </html>
