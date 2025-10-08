@@ -111,6 +111,8 @@ function generarLaberinto(nivel) {
   mapa = Array.from({ length: tamaño }, () =>
     Array.from({ length: tamaño }, () => Math.random() < 0.3 ? 1 : 0)
   );
+
+  // 🟢 Posición inicial y meta garantizadas como camino
   jugador = { x: 0, y: 0 };
   meta = { x: tamaño - 1, y: tamaño - 1 };
   mapa[jugador.y][jugador.x] = 0;
@@ -142,20 +144,35 @@ function iniciarLaberinto(nivel) {
   mostrarSeccion('laberintoContainer');
 }
 
+// 🕹️ Movimiento con flechas
 document.addEventListener('keydown', e => {
-  let { x, y } = jugador;
-  if (e.key === 'ArrowUp') y--;
-  if (e.key === 'ArrowDown') y++;
-  if (e.key === 'ArrowLeft') x--;
-  if (e.key === 'ArrowRight') x++;
-  if (mapa[y] && mapa[y][x] === 0) jugador = { x, y };
-  dibujarLaberinto();
-  if (jugador.x === meta.x && jugador.y === meta.y) {
-    alert('🎉 ¡Nivel completado!');
-    mostrarSeccion('juegos');
+  if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
+  e.preventDefault(); // ✨ evita scroll
+
+  let nuevoX = jugador.x;
+  let nuevoY = jugador.y;
+
+  if (e.key === 'ArrowUp') nuevoY--;
+  if (e.key === 'ArrowDown') nuevoY++;
+  if (e.key === 'ArrowLeft') nuevoX--;
+  if (e.key === 'ArrowRight') nuevoX++;
+
+  // Validar límites y paredes
+  if (nuevoX >= 0 && nuevoX < tamaño && nuevoY >= 0 && nuevoY < tamaño && mapa[nuevoY][nuevoX] === 0) {
+    jugador.x = nuevoX;
+    jugador.y = nuevoY;
+    dibujarLaberinto();
+
+    if (jugador.x === meta.x && jugador.y === meta.y) {
+      setTimeout(()=>{
+        alert('🎉 ¡Nivel completado!');
+        mostrarSeccion('juegos');
+      },100);
+    }
   }
 });
 </script>
 </body>
 </html>
+
 
