@@ -27,44 +27,54 @@
       border-radius:12px; 
       border:none; 
       background:#ffb6b9; 
-      transition:transform .25s, background .3s;
+      transition:transform .25s, background .3s, box-shadow .3s;
     }
     button:hover{
       transform:scale(1.06); 
       background:#ff8c94;
+      box-shadow: 0 0 12px rgba(255,120,150,0.8);
     }
 
-    /* Laberinto */
-    .laberinto{ 
-      display:grid; 
-      margin:18px auto; 
-      background:#222; 
-      border:5px solid #555; 
-      gap:2px; 
-      overflow-y:auto; 
-      max-height: 500px; 
-      padding:10px; 
-    }
-    .celda{ 
-      width:25px; 
-      height:25px; 
-      background:#eee; 
-    }
-    .pared{ 
-      background:#333; 
-    }
-    .jugador{ 
-      background:#4CAF50; 
-    }
-    .meta{ 
-      background:gold; 
-    }
     .volver{ 
       background:#b5ead7; 
       margin-top:20px; 
     }
 
-    /* Efectos visuales del mundo ilógico */
+    /* LABERINTO NUEVO */
+    .laberinto{ 
+      display:grid; 
+      margin:20px auto; 
+      background:#111; 
+      border:6px solid #333; 
+      gap:2px; 
+      overflow-y:auto; 
+      max-height: 550px; 
+      padding:10px; 
+      border-radius:15px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.6);
+    }
+    .celda{ 
+      width:28px; 
+      height:28px; 
+      border-radius:6px;
+      transition:background 0.2s;
+    }
+    .pared{ 
+      background: repeating-linear-gradient(
+        45deg, #3e0a3e, #3e0a3e 6px, #4b1b5b 6px, #4b1b5b 12px
+      );
+      box-shadow: inset 0 0 6px #000;
+    }
+    .jugador{ 
+      background: radial-gradient(circle,#ffeb3b 30%,#fbc02d 80%);
+      box-shadow: 0 0 10px #fff176;
+    }
+    .meta{ 
+      background: radial-gradient(circle,#00e676 40%,#2e7d32 90%);
+      box-shadow: 0 0 15px #00e676;
+    }
+
+    /* Partículas del mundo ilógico */
     .particula{
       position:fixed;
       border-radius:50%;
@@ -89,6 +99,15 @@
       padding:10px 20px;
       line-height:1.5;
     }
+
+    /* Animación del laberinto */
+    .laberinto .celda {
+      transition: transform 0.15s ease, background 0.3s;
+    }
+    .laberinto .celda:hover {
+      transform: scale(1.1);
+    }
+
   </style>
 </head>
 <body>
@@ -144,30 +163,40 @@
     <h2>🤔 Acertijo</h2>
     <p id="pregunta" class="pregunta"></p>
     <div id="opciones"></div>
-    <button class="volver" onclick="mostrarSeccion('menu')">Volver</button>
+    <button class="volver" onclick="volverAcertijo()">Volver</button>
   </div>
 
   <script>
-    /* ----- CAMBIO DE SECCIÓN ----- */
+    let fondoIlogicoActivo = false;
+
     function mostrarSeccion(id, ilogico=false){
       document.querySelectorAll('.menu,.mundo,.juegos,.laberinto-container,.acertijo-container')
         .forEach(s=>s.classList.remove('activo'));
       document.getElementById(id).classList.add('activo');
 
       if(ilogico){
+        fondoIlogicoActivo = true;
         document.body.style.background = "radial-gradient(circle, #ff4d4d, #990000)";
         lanzarEfectoIlogico();
-      } else {
+      } else if (!fondoIlogicoActivo) {
         document.body.style.background = "linear-gradient(to bottom,#a8e6cf,#dcedc1)";
       }
     }
 
     function volverMenu(){
+      fondoIlogicoActivo = false;
       document.body.style.background = "linear-gradient(to bottom,#a8e6cf,#dcedc1)";
       mostrarSeccion('menu');
     }
 
-    /* ----- EFECTO VISUAL DEL MUNDO ILÓGICO ----- */
+    function volverAcertijo(){
+      if (fondoIlogicoActivo) {
+        mostrarSeccion('mundoIlogico');
+      } else {
+        mostrarSeccion('mundoLogico');
+      }
+    }
+
     function lanzarEfectoIlogico(){
       for(let i=0;i<60;i++){
         const p=document.createElement('div');
@@ -182,7 +211,7 @@
       }
     }
 
-    /* ----- ACERTIJOS ----- */
+    /* ACERTIJOS */
     const acertijosLogicos = [
       { pregunta: "Si tengo 5 manzanas y me como 2, ¿cuántas me quedan?", opciones:["2","3","5","7"], correcta:"3" },
       { pregunta: "¿Qué número sigue en la secuencia? 2, 4, 6, 8, ...", opciones:["9","10","12","6"], correcta:"10" },
@@ -207,7 +236,7 @@
         b.onclick = () => {
           if(op === r.correcta){
             b.style.background = '#90ee90';
-            setTimeout(()=>{ alert('✅ ¡Correcto!'); mostrarSeccion('menu'); },600);
+            setTimeout(()=>{ alert('✅ ¡Correcto!'); volverAcertijo(); },600);
           } else {
             b.style.background = '#ff6961';
             setTimeout(()=>{ alert('❌ Incorrecto, intenta de nuevo'); iniciarAcertijo(tipo); },600);
@@ -215,10 +244,12 @@
         };
         opcionesDiv.appendChild(b);
       });
-      mostrarSeccion('acertijoContainer');
+      document.getElementById('acertijoContainer').classList.add('activo');
+      document.querySelectorAll('.menu,.mundo,.juegos,.laberinto-container')
+        .forEach(s=>s.classList.remove('activo'));
     }
 
-    /* ----- LABERINTO (igual que antes) ----- */
+    /* LABERINTO */
     let jugador={x:0,y:0},meta={x:0,y:0},mapa=[],tamaño=10;
     function generarLaberinto(nivel){
       tamaño=(nivel==='facil')?10:(nivel==='medio')?15:(nivel==='dificil')?20:25;
@@ -260,7 +291,7 @@
     function dibujarLaberinto(){
       const cont=document.getElementById('laberinto');
       cont.innerHTML='';
-      const px=Math.max(12,Math.floor(Math.min(window.innerWidth-40,window.innerHeight-200)/tamaño));
+      const px=Math.max(14,Math.floor(Math.min(window.innerWidth-40,window.innerHeight-200)/tamaño));
       cont.style.gridTemplateColumns=`repeat(${tamaño},${px}px)`;
       for(let y=0;y<tamaño;y++){
         for(let x=0;x<tamaño;x++){
