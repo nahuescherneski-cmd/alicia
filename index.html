@@ -10,6 +10,7 @@
       font-family: 'Trebuchet MS', sans-serif; 
       text-align:center; 
       overflow:hidden; 
+      transition: background 2s ease;
     }
     h1{ margin-top:20px;color:#333; }
 
@@ -26,7 +27,7 @@
       border-radius:12px; 
       border:none; 
       background:#ffb6b9; 
-      transition:transform .25s;
+      transition:transform .25s, background .3s;
     }
     button:hover{
       transform:scale(1.06); 
@@ -40,9 +41,9 @@
       background:#222; 
       border:5px solid #555; 
       gap:2px; 
-      overflow-y:auto; /* Esto permite el scroll vertical */
-      max-height: 500px; /* Para evitar que la página se vuelva infinita */
-      padding:10px; /* Espacio interno */
+      overflow-y:auto; 
+      max-height: 500px; 
+      padding:10px; 
     }
     .celda{ 
       width:25px; 
@@ -63,11 +64,30 @@
       margin-top:20px; 
     }
 
-    /* 📸 Imágenes decorativas eliminadas de Alicia */
-    /* Las imágenes de Alicia han sido eliminadas de la estructura del HTML */
+    /* Efectos visuales del mundo ilógico */
+    .particula{
+      position:fixed;
+      border-radius:50%;
+      pointer-events:none;
+      opacity:0.8;
+      animation:flotar 3s ease-in-out forwards;
+    }
 
-    @media (max-width: 700px){
-      /* Ajustes para dispositivos móviles (no es necesario mostrar las imágenes decorativas) */
+    @keyframes flotar {
+      from { transform:translateY(0) scale(1); opacity:1; }
+      to { transform:translateY(-200px) scale(0); opacity:0; }
+    }
+
+    /* Texto del resumen */
+    .resumen{
+      max-width:600px;
+      margin:20px auto;
+      font-size:18px;
+      color:#333;
+      background:rgba(255,255,255,0.7);
+      border-radius:12px;
+      padding:10px 20px;
+      line-height:1.5;
     }
   </style>
 </head>
@@ -76,8 +96,11 @@
 
   <!-- MENÚ -->
   <div id="menu" class="menu activo">
+    <div class="resumen">
+      <p><b>Resumen:</b> Alicia, una joven curiosa, cae en un mundo mágico lleno de personajes excéntricos como el Sombrerero Loco, el Gato Risón y la Reina de Corazones. En su viaje, debe descubrir quién es realmente y encontrar la manera de regresar a casa mientras desafía la lógica del País de las Maravillas.</p>
+    </div>
     <button onclick="mostrarSeccion('mundoLogico')">🌿 Mundo Lógico</button>
-    <button onclick="mostrarSeccion('mundoIlogico')">🌀 Mundo Ilógico</button>
+    <button onclick="mostrarSeccion('mundoIlogico', true)">🌀 Mundo Ilógico</button>
     <button onclick="mostrarSeccion('juegos')">🎮 Juegos</button>
   </div>
 
@@ -87,7 +110,7 @@
     <p>Aquí todo tiene sentido…</p>
     <p><b>Dato curioso:</b> Alicia representa la razón frente al caos.</p>
     <button onclick="iniciarAcertijo('logico')">🧠 Iniciar Acertijo</button>
-    <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
+    <button class="volver" onclick="volverMenu()">Volver al Menú</button>
   </div>
 
   <!-- MUNDO ILÓGICO -->
@@ -96,7 +119,7 @@
     <p>Las reglas cambian aquí…</p>
     <p><b>Dato curioso:</b> Lewis Carroll escondía acertijos matemáticos en sus cuentos.</p>
     <button onclick="iniciarAcertijo('ilogico')">🤪 Iniciar Acertijo</button>
-    <button class="volver" onclick="mostrarSeccion('menu')">Volver al Menú</button>
+    <button class="volver" onclick="volverMenu()">Volver al Menú</button>
   </div>
 
   <!-- JUEGOS -->
@@ -125,13 +148,41 @@
   </div>
 
   <script>
-    function mostrarSeccion(id){
+    /* ----- CAMBIO DE SECCIÓN ----- */
+    function mostrarSeccion(id, ilogico=false){
       document.querySelectorAll('.menu,.mundo,.juegos,.laberinto-container,.acertijo-container')
         .forEach(s=>s.classList.remove('activo'));
       document.getElementById(id).classList.add('activo');
+
+      if(ilogico){
+        document.body.style.background = "radial-gradient(circle, #ff4d4d, #990000)";
+        lanzarEfectoIlogico();
+      } else {
+        document.body.style.background = "linear-gradient(to bottom,#a8e6cf,#dcedc1)";
+      }
     }
 
-    /* ----- Acertijos ----- */
+    function volverMenu(){
+      document.body.style.background = "linear-gradient(to bottom,#a8e6cf,#dcedc1)";
+      mostrarSeccion('menu');
+    }
+
+    /* ----- EFECTO VISUAL DEL MUNDO ILÓGICO ----- */
+    function lanzarEfectoIlogico(){
+      for(let i=0;i<60;i++){
+        const p=document.createElement('div');
+        p.classList.add('particula');
+        const size=Math.random()*8+4;
+        p.style.width=p.style.height=size+'px';
+        p.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        p.style.left=Math.random()*window.innerWidth+'px';
+        p.style.top=Math.random()*window.innerHeight+'px';
+        document.body.appendChild(p);
+        setTimeout(()=>p.remove(),3000);
+      }
+    }
+
+    /* ----- ACERTIJOS ----- */
     const acertijosLogicos = [
       { pregunta: "Si tengo 5 manzanas y me como 2, ¿cuántas me quedan?", opciones:["2","3","5","7"], correcta:"3" },
       { pregunta: "¿Qué número sigue en la secuencia? 2, 4, 6, 8, ...", opciones:["9","10","12","6"], correcta:"10" },
@@ -153,20 +204,13 @@
       r.opciones.forEach(op=>{
         const b = document.createElement('button');
         b.textContent = op;
-        b.className = 'opcion';
         b.onclick = () => {
           if(op === r.correcta){
             b.style.background = '#90ee90';
-            setTimeout(()=>{
-              alert('✅ ¡Correcto!');
-              mostrarSeccion('menu');
-            },600);
+            setTimeout(()=>{ alert('✅ ¡Correcto!'); mostrarSeccion('menu'); },600);
           } else {
             b.style.background = '#ff6961';
-            setTimeout(()=>{
-              alert('❌ Incorrecto, intenta de nuevo');
-              iniciarAcertijo(tipo);
-            },600);
+            setTimeout(()=>{ alert('❌ Incorrecto, intenta de nuevo'); iniciarAcertijo(tipo); },600);
           }
         };
         opcionesDiv.appendChild(b);
@@ -174,24 +218,19 @@
       mostrarSeccion('acertijoContainer');
     }
 
-    /* ----- LABERINTO ----- */
-    let jugador = { x:0, y:0 };
-    let meta = { x:0, y:0 };
-    let mapa = [];
-    let tamaño = 10;
-
+    /* ----- LABERINTO (igual que antes) ----- */
+    let jugador={x:0,y:0},meta={x:0,y:0},mapa=[],tamaño=10;
     function generarLaberinto(nivel){
-      tamaño = (nivel==='facil')?10:(nivel==='medio')?15:(nivel==='dificil')?20:25;
-      const prob = (nivel==='facil')?0.18:(nivel==='medio')?0.28:(nivel==='dificil')?0.36:0.46;
-      mapa = Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
-      jugador = {x:0,y:0}; meta = {x:tamaño-1,y:tamaño-1};
+      tamaño=(nivel==='facil')?10:(nivel==='medio')?15:(nivel==='dificil')?20:25;
+      const prob=(nivel==='facil')?0.18:(nivel==='medio')?0.28:(nivel==='dificil')?0.36:0.46;
+      mapa=Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
+      jugador={x:0,y:0}; meta={x:tamaño-1,y:tamaño-1};
       mapa[0][0]=0; mapa[meta.y][meta.x]=0;
       if(!pathExists()) carveGuaranteedPath();
     }
-
     function pathExists(){
-      const vis = Array.from({length:tamaño},()=>Array(tamaño).fill(false));
-      const q=[[0,0]], dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+      const vis=Array.from({length:tamaño},()=>Array(tamaño).fill(false));
+      const q=[[0,0]],dirs=[[1,0],[-1,0],[0,1],[0,-1]];
       vis[0][0]=true;
       while(q.length){
         const [cx,cy]=q.shift();
@@ -205,7 +244,6 @@
       }
       return false;
     }
-
     function carveGuaranteedPath(){
       let cx=0,cy=0;
       while(cx!==meta.x||cy!==meta.y){
@@ -219,7 +257,6 @@
         }
       }
     }
-
     function dibujarLaberinto(){
       const cont=document.getElementById('laberinto');
       cont.innerHTML='';
@@ -236,7 +273,6 @@
         }
       }
     }
-
     function iniciarLaberinto(nivel){
       generarLaberinto(nivel);
       document.getElementById('tituloLaberinto').textContent=`🧭 Nivel: ${nivel.toUpperCase()}`;
@@ -244,28 +280,19 @@
       dibujarLaberinto();
       mostrarSeccion('laberintoContainer');
     }
-
     document.addEventListener('keydown',(e)=>{
       if(!document.getElementById('laberintoContainer').classList.contains('activo'))return;
-      const k=e.key; let nx=jugador.x, ny=jugador.y;
+      const k=e.key; let nx=jugador.x,ny=jugador.y;
       if(k==='ArrowUp')ny--; if(k==='ArrowDown')ny++;
       if(k==='ArrowLeft')nx--; if(k==='ArrowRight')nx++;
       if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&mapa[ny][nx]===0){
         jugador.x=nx;jugador.y=ny;
         dibujarLaberinto();
         if(nx===meta.x&&ny===meta.y){
-          setTimeout(()=>{
-            alert('🎉 ¡Nivel completado!');
-            mostrarSeccion('juegos');
-          },150);
+          setTimeout(()=>{alert('🎉 ¡Nivel completado!'); mostrarSeccion('juegos');},150);
         }
       }
     });
-
-    mostrarSeccion('menu');
   </script>
- 
-
-
-
-
+</body>
+</html>
