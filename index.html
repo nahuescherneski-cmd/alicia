@@ -84,6 +84,12 @@
     100% { filter: hue-rotate(20deg) brightness(1.2); }
   }
 
+  /* Estilos para los laberintos */
+  .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
+  .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
+  .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
+  .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
+
   .resumen {
     background: rgba(255,255,255,0.7);
     margin: 20px auto;
@@ -147,7 +153,7 @@
 <!-- LABERINTO -->
 <section id="laberintoContainer">
   <h2 id="tituloLaberinto">🧭 Laberinto</h2>
-  <div id="laberinto"></div>
+  <div id="laberinto" class="facil"></div>
   <button onclick="mostrarSeccion('juegos')">⬅ Volver</button>
 </section>
 
@@ -247,6 +253,7 @@
   }
 
   function iniciarLaberinto(nivel){
+    document.getElementById('laberinto').className = nivel;
     generarLaberinto(nivel);
     document.getElementById('tituloLaberinto').textContent = "🧭 Nivel: " + nivel.toUpperCase();
     dibujarLaberinto();
