@@ -1,97 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alicia en el País de las Maravillas - Juego</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      animation: psicodelico 10s infinite alternate;
-      background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f);
-      background-size: 400% 400%;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alicia en el País de las Maravillas - Juego</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
+    margin: 0; padding: 0;
+    text-align: center;
+    transition: background 1s ease;
+  }
 
-    h1, h2 {
-      color: white;
-    }
+  h1, h2 {
+    color: #3b0066;
+  }
 
-    section {
-      display: none;
-      padding: 30px;
-      min-height: 100vh;
-    }
+  section {
+    display: none;
+    padding: 30px;
+    min-height: 100vh;
+  }
 
-    .activo {
-      display: block;
-    }
+  .activo {
+    display: block;
+  }
 
-    button {
-      background: #7b00ff;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
+  button {
+    background: #7b00ff;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    margin: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
 
-    button:hover {
-      background: #9f33ff;
-      transform: scale(1.05);
-    }
+  button:hover {
+    background: #9f33ff;
+    transform: scale(1.05);
+  }
 
-    .acertijo {
-      margin: 20px auto;
-      background: rgba(255, 255, 255, 0.8);
-      padding: 20px;
-      border-radius: 15px;
-      width: 70%;
-      max-width: 600px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    }
+  .acertijo {
+    margin: 20px auto;
+    background: #fff6ff;
+    padding: 20px;
+    border-radius: 15px;
+    width: 70%;
+    max-width: 600px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  }
 
-    #laberinto {
-      display: grid;
-      justify-content: center;
-      gap: 2px;
-      margin: 20px auto;
-      overflow-y: auto;
-      max-height: 70vh;
-    }
+  #laberinto {
+    display: grid;
+    justify-content: center;
+    gap: 2px;
+    margin: 20px auto;
+    overflow-y: auto;
+    max-height: 70vh;
+  }
 
-    .celda {
-      width: 30px; height: 30px;
-      border-radius: 5px;
-      transition: 0.2s;
-    }
+  .celda {
+    width: 24px; height: 24px;
+    border-radius: 5px;
+    transition: 0.2s;
+  }
 
-    .pared { background: #2f0052; }
-    .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-    .meta { background: #ff5c8d; }
+  .pared { background: #2f0052; }
+  .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+  .meta { background: #ff5c8d; }
 
-    @keyframes psicodelico {
-      0% { background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f); }
-      25% { background: linear-gradient(45deg, #8c1d8f, #ff420e, #ffd300, #000b6c); }
-      50% { background: linear-gradient(45deg, #0ff000, #ff0000, #f5ff00, #7030a0); }
-      75% { background: linear-gradient(45deg, #ff0a85, #2b0044, #40d1b3, #bdb600); }
-      100% { background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f); }
-    }
+  /* Efectos mundo ilógico */
+  .ilogico {
+    background: radial-gradient(circle, #ff0000, #550000);
+    animation: glitch 1s infinite alternate;
+  }
 
-    .resumen {
-      background: rgba(255, 255, 255, 0.7);
-      margin: 20px auto;
-      padding: 15px;
-      border-radius: 12px;
-      width: 80%;
-      font-size: 17px;
-    }
-  </style>
+  @keyframes glitch {
+    0% { filter: hue-rotate(0deg) brightness(1); }
+    100% { filter: hue-rotate(20deg) brightness(1.2); }
+  }
+
+  /* Estilos para los laberintos */
+  .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
+  .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
+  .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
+  .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
+
+  .resumen {
+    background: rgba(255,255,255,0.7);
+    margin: 20px auto;
+    padding: 15px;
+    border-radius: 12px;
+    width: 80%;
+    font-size: 17px;
+  }
+</style>
 </head>
 <body>
 
@@ -146,7 +153,7 @@
 <!-- LABERINTO -->
 <section id="laberintoContainer">
   <h2 id="tituloLaberinto">🧭 Laberinto</h2>
-  <div id="laberinto"></div>
+  <div id="laberinto" class="facil"></div>
   <button onclick="mostrarSeccion('juegos')">⬅ Volver</button>
 </section>
 
@@ -169,16 +176,12 @@
 
   const acertijosLogicos = [
     { pregunta:"Si un tren sale de A a las 3 y otro de B a las 4, ¿cuál llega primero?", opciones:["El más rápido","El que sale antes","Depende de la distancia"], correcta:"El más rápido" },
-    { pregunta:"Si tengo 5 manzanas y doy 2, ¿cuántas me quedan?", opciones:["3","2","5"], correcta:"3" },
-    { pregunta:"Si dos es igual a tres, ¿qué es el doble de cuatro?", opciones:["Seis","Ocho","Cinco"], correcta:"Ocho" },
-    { pregunta:"¿Cuántos segundos tiene un minuto?", opciones:["60","100","10"], correcta:"60" }
+    { pregunta:"Si tengo 5 manzanas y doy 2, ¿cuántas me quedan?", opciones:["3","2","5"], correcta:"3" }
   ];
 
   const acertijosIlogicos = [
     { pregunta:"¿Qué pesa más, una pluma o una idea?", opciones:["La pluma","La idea","Depende del viento"], correcta:"Depende del viento" },
-    { pregunta:"¿Por qué el reloj corre si no tiene piernas?", opciones:["Porque tiene tiempo","Porque es rápido","Porque no para nunca"], correcta:"Porque tiene tiempo" },
-    { pregunta:"¿Cuántos meses tienen 28 días?", opciones:["Todos","Solo febrero","Ninguno"], correcta:"Todos" },
-    { pregunta:"Si caes de un décimo piso, ¿qué te pasa?", opciones:["Muero","Sobrevives","Depende del ángulo"], correcta:"Depende del ángulo" }
+    { pregunta:"¿Por qué el reloj corre si no tiene piernas?", opciones:["Porque tiene tiempo","Porque es rápido","Porque no para nunca"], correcta:"Porque tiene tiempo" }
   ];
 
   function iniciarAcertijo(tipo){
@@ -204,110 +207,75 @@
       };
       opcionesDiv.appendChild(b);
     });
+    document.body.classList.remove("ilogico");
     mostrarSeccion('acertijoContainer');
   }
 
-  const laberintos = {
-    facil: [
-      ['#', '#', '#', '#', '#'],
-      ['#', ' ', ' ', ' ', '#'],
-      ['#', ' ', '#', ' ', '#'],
-      ['#', ' ', ' ', ' ', '#'],
-      ['#', '#', '#', '#', '#']
-    ],
-    medio: [
-      ['#', '#', '#', '#', '#', '#'],
-      ['#', ' ', ' ', ' ', '#', '#'],
-      ['#', ' ', '#', ' ', '#', '#'],
-      ['#', ' ', '#', ' ', '#', '#'],
-      ['#', ' ', ' ', ' ', ' ', '#'],
-      ['#', '#', '#', '#', '#', '#']
-    ],
-    dificil: [
-      ['#', '#', '#', '#', '#', '#', '#'],
-      ['#', ' ', ' ', ' ', ' ', '#', '#'],
-      ['#', ' ', '#', '#', ' ', ' ', '#'],
-      ['#', ' ', '#', '#', ' ', ' ', '#'],
-      ['#', ' ', '#', ' ', ' ', '#', '#'],
-      ['#', ' ', '#', ' ', ' ', ' ', '#'],
-      ['#', '#', '#', '#', '#', '#', '#']
-    ],
-    imposible: [
-      ['#', '#', '#', '#', '#', '#', '#', '#'],
-      ['#', ' ', ' ', ' ', ' ', '#', '#', '#'],
-      ['#', '#', ' ', '#', '#', ' ', '#', '#'],
-      ['#', ' ', '#', ' ', ' ', '#', ' ', '#'],
-      ['#', '#', ' ', ' ', ' ', ' ', '#', '#'],
-      ['#', '#', ' ', ' ', '#', ' ', '#', '#'],
-      ['#', ' ', '#', ' ', ' ', ' ', ' ', '#'],
-      ['#', '#', '#', '#', '#', '#', '#', '#']
-    ]
-  };
+  /* ===== LABERINTO ===== */
+  let jugador={x:0,y:0}, meta={x:0,y:0}, mapa=[], tamaño=10;
 
-  let jugador = { x: 1, y: 1 };
+  function generarLaberinto(nivel){
+    tamaño = (nivel==='facil')?10:(nivel==='medio')?14:(nivel==='dificil')?18:24;
+    const prob = (nivel==='facil')?0.18:(nivel==='medio')?0.26:(nivel==='dificil')?0.34:0.42;
+    mapa = Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
+    jugador={x:0,y:0}; meta={x:tamaño-1,y:tamaño-1};
+    mapa[0][0]=0; mapa[meta.y][meta.x]=0;
+    carveGuaranteedPath();
+  }
 
-  function iniciarLaberinto(nivel) {
-    const laberinto = laberintos[nivel];
-    const contenedor = document.getElementById("laberinto");
-    contenedor.innerHTML = "";
-    jugador = { x: 1, y: 1 }; // Reset jugador
+  function carveGuaranteedPath(){
+    let cx=0, cy=0;
+    while(cx!==meta.x || cy!==meta.y){
+      if(Math.random()<0.5 && cx<meta.x)cx++; else if(cy<meta.y)cy++;
+      mapa[cy][cx]=0;
+      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
+      const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)];
+      const nx=cx+dx, ny=cy+dy;
+      if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño) mapa[ny][nx]=0;
+    }
+  }
 
-    for (let i = 0; i < laberinto.length; i++) {
-      for (let j = 0; j < laberinto[i].length; j++) {
-        const celda = document.createElement("div");
-        celda.classList.add("celda");
-
-        if (laberinto[i][j] === '#') {
-          celda.classList.add("pared");
-        } else {
-          celda.classList.add("camino");
-        }
-
-        contenedor.appendChild(celda);
+  function dibujarLaberinto(){
+    const cont=document.getElementById('laberinto');
+    cont.innerHTML='';
+    const px=Math.max(18,Math.floor(Math.min(window.innerWidth-60,window.innerHeight-200)/tamaño));
+    cont.style.gridTemplateColumns=`repeat(${tamaño},${px}px)`;
+    for(let y=0;y<tamaño;y++){
+      for(let x=0;x<tamaño;x++){
+        const c=document.createElement('div');
+        c.className='celda';
+        if(mapa[y][x]===1)c.classList.add('pared');
+        if(jugador.x===x&&jugador.y===y)c.classList.add('jugador');
+        if(meta.x===x&&meta.y===y)c.classList.add('meta');
+        cont.appendChild(c);
       }
     }
-    // Mover al jugador
-    moverJugador();
-    window.addEventListener("keydown", mover);
   }
 
-  function moverJugador() {
-    const celdas = document.querySelectorAll(".celda");
-    const index = jugador.y * 5 + jugador.x;
-    celdas[index].classList.add("jugador");
+  function iniciarLaberinto(nivel){
+    document.getElementById('laberinto').className = nivel;
+    generarLaberinto(nivel);
+    document.getElementById('tituloLaberinto').textContent = "🧭 Nivel: " + nivel.toUpperCase();
+    dibujarLaberinto();
+    mostrarSeccion('laberintoContainer');
   }
 
-  function mover(e) {
-    const celdas = document.querySelectorAll(".celda");
-    const index = jugador.y * 5 + jugador.x;
-    celdas[index].classList.remove("jugador");
-
-    switch (e.key) {
-      case "ArrowUp":
-        if (jugador.y > 0 && celdas[(jugador.y - 1) * 5 + jugador.x].classList.contains("camino")) {
-          jugador.y--;
-        }
-        break;
-      case "ArrowDown":
-        if (jugador.y < 4 && celdas[(jugador.y + 1) * 5 + jugador.x].classList.contains("camino")) {
-          jugador.y++;
-        }
-        break;
-      case "ArrowLeft":
-        if (jugador.x > 0 && celdas[jugador.y * 5 + jugador.x - 1].classList.contains("camino")) {
-          jugador.x--;
-        }
-        break;
-      case "ArrowRight":
-        if (jugador.x < 4 && celdas[jugador.y * 5 + jugador.x + 1].classList.contains("camino")) {
-          jugador.x++;
-        }
-        break;
+  document.addEventListener('keydown', e=>{
+    if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
+    let nx=jugador.x, ny=jugador.y;
+    if(e.key==='ArrowUp')ny--;
+    if(e.key==='ArrowDown')ny++;
+    if(e.key==='ArrowLeft')nx--;
+    if(e.key==='ArrowRight')nx++;
+    if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&mapa[ny][nx]===0){
+      jugador.x=nx; jugador.y=ny;
+      dibujarLaberinto();
+      if(nx===meta.x&&ny===meta.y){
+        setTimeout(()=>{ alert('🎉 ¡Has escapado del laberinto!'); mostrarSeccion('juegos'); },300);
+      }
     }
+  });
 
-    moverJugador();
-  }
 </script>
-
 </body>
 </html>
