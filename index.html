@@ -1,281 +1,308 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alicia en el País de las Maravillas - Juego</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
-      margin: 0; padding: 0;
-      text-align: center;
-      transition: background 1s ease;
-    }
-
-    h1, h2 {
-      color: #3b0066;
-    }
-
-    section {
-      display: none;
-      padding: 30px;
-      min-height: 100vh;
-    }
-
-    .activo {
-      display: block;
-    }
-
-    button {
-      background: #7b00ff;
-      color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 12px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background: #9f33ff;
-      transform: scale(1.05);
-    }
-
-    .acertijo {
-      margin: 20px auto;
-      background: #fff6ff;
-      padding: 20px;
-      border-radius: 15px;
-      width: 70%;
-      max-width: 600px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    }
-
-    #laberinto {
-      display: grid;
-      justify-content: center;
-      gap: 2px;
-      margin: 20px auto;
-      overflow-y: auto;
-      max-height: 70vh;
-    }
-
-    .celda {
-      width: 24px; height: 24px;
-      border-radius: 5px;
-      transition: 0.2s;
-    }
-
-    .pared { background: #2f0052; }
-    .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-    .meta { background: #ff5c8d; }
-
-    /* Efectos mundo ilógico */
-    .ilogico {
-      background: radial-gradient(circle, #ff0000, #550000);
-      animation: glitch 1s infinite alternate;
-    }
-
-    @keyframes glitch {
-      0% { filter: hue-rotate(0deg) brightness(1); }
-      100% { filter: hue-rotate(20deg) brightness(1.2); }
-    }
-
-    /* Estilos para los laberintos */
-    .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
-    .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
-    .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
-    .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
-
-    .resumen {
-      background: rgba(255,255,255,0.7);
-      margin: 20px auto;
-      padding: 15px;
-      border-radius: 12px;
-      width: 80%;
-      font-size: 17px;
-    }
-  </style>
-</head>
-<body>
-
-<!-- MENÚ PRINCIPAL -->
-<section id="menu" class="activo">
-  <h1>🌹 Alicia en el País de las Maravillas 🌹</h1>
-  <div class="resumen">
-    <p><b>Resumen:</b> Alicia es una joven curiosa que cae por una madriguera y 
-    llega a un mundo mágico lleno de personajes extraños y situaciones ilógicas.
-    En su viaje aprende sobre la imaginación, la identidad y la importancia de
-    pensar por sí misma, enfrentando desafíos que mezclan lo lógico y lo absurdo.</p>
-  </div>
-  <button onclick="mostrarSeccion('mundoLogico')">🌿 Mundo Lógico</button>
-  <button onclick="entrarMundoIlogico()">🔥 Mundo Ilógico</button>
-  <button onclick="mostrarSeccion('juegos')">🎮 Juegos (Laberinto)</button>
-</section>
-
-<!-- MUNDO LÓGICO -->
-<section id="mundoLogico">
-  <h2>🌿 Mundo Lógico</h2>
-  <p>Aquí reina la razón y la claridad. ¡Resuelve un acertijo lógico!</p>
-  <button onclick="iniciarAcertijo('logico')">Resolver acertijo</button><br>
-  <button onclick="mostrarSeccion('menu')">⬅ Volver</button>
-</section>
-
-<!-- MUNDO ILÓGICO -->
-<section id="mundoIlogico">
-  <h2>🔥 Mundo Ilógico</h2>
-  <p>Bienvenido al caos y lo imposible. ¡Aquí nada tiene sentido!</p>
-  <button onclick="iniciarAcertijo('ilogico')">Resolver acertijo</button><br>
-  <button onclick="salirMundoIlogico()">⬅ Volver</button>
-</section>
-
-<!-- ACERTIJOS -->
-<section id="acertijoContainer">
-  <div class="acertijo">
-    <h3 id="pregunta"></h3>
-    <div id="opciones"></div>
-  </div>
-</section>
-
-<!-- JUEGOS -->
-<section id="juegos">
-  <h2>🎮 Niveles del Laberinto</h2>
-  <button onclick="iniciarLaberinto('facil')">Nivel Fácil</button>
-  <button onclick="iniciarLaberinto('medio')">Nivel Medio</button>
-  <button onclick="iniciarLaberinto('dificil')">Nivel Difícil</button>
-  <button onclick="iniciarLaberinto('imposible')">Nivel Imposible</button><br>
-  <button onclick="mostrarSeccion('menu')">⬅ Volver</button>
-</section>
-
-<!-- LABERINTO -->
-<section id="laberintoContainer">
-  <h2 id="tituloLaberinto">🧭 Laberinto</h2>
-  <div id="laberinto" class="facil"></div>
-  <button onclick="mostrarSeccion('juegos')">⬅ Volver</button>
-</section>
-
-<script>
-  function mostrarSeccion(id){
-    document.querySelectorAll("section").forEach(s => s.classList.remove("activo"));
-    document.body.classList.remove("ilogico");
-    document.getElementById(id).classList.add("activo");
-  }
-
-  function entrarMundoIlogico(){
-    document.body.classList.add("ilogico");
-    mostrarSeccion('mundoIlogico');
-  }
-
-  function salirMundoIlogico(){
-    document.body.classList.remove("ilogico");
-    mostrarSeccion('menu');
-  }
-
-  const acertijosLogicos = [
-    { pregunta:"Si un tren sale de A a las 3 y otro de B a las 4, ¿cuál llega primero?", opciones:["El más rápido","El que sale antes","Depende de la distancia"], correcta:"El más rápido" },
-    { pregunta:"Si tengo 5 manzanas y doy 2, ¿cuántas me quedan?", opciones:["3","2","5"], correcta:"3" }
-  ];
-
-  const acertijosIlogicos = [
-    { pregunta:"¿Qué pesa más, una pluma o una idea?", opciones:["La pluma","La idea","Depende del viento"], correcta:"Depende del viento" },
-    { pregunta:"¿Por qué el reloj corre si no tiene piernas?", opciones:["Porque tiene tiempo","Porque es rápido","Porque no para nunca"], correcta:"Porque tiene tiempo" }
-  ];
-
-  function iniciarAcertijo(tipo){
-    const lista = tipo==='logico'?acertijosLogicos:acertijosIlogicos;
-    const r = lista[Math.floor(Math.random()*lista.length)];
-    document.getElementById('pregunta').textContent = r.pregunta;
-    const opcionesDiv = document.getElementById('opciones');
-    opcionesDiv.innerHTML = '';
-    r.opciones.forEach(op=>{
-      const b = document.createElement('button');
-      b.textContent = op;
-      b.onclick = ()=>{ 
-        if(op===r.correcta){
-          b.style.background='#00ff88';
-          setTimeout(()=>{
-            alert('✅ ¡Correcto!');
-            mostrarSeccion('menu');
-          },600);
-        } else {
-          b.style.background='#ff5555';
-          setTimeout(()=>{ alert('❌ Incorrecto, intenta otra vez'); iniciarAcertijo(tipo); },600);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alicia en el Laberinto</title>
+    <style>
+        body {
+            background: #222;
+            margin: 0;
+            padding: 0;
+            font-family: 'Trebuchet MS', sans-serif;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-      };
-      opcionesDiv.appendChild(b);
-    });
-    document.body.classList.remove("ilogico");
-    mostrarSeccion('acertijoContainer');
-  }
 
-  /* ===== LABERINTO ===== */
-  let jugador={x:0,y:0}, meta={x:0,y:0}, mapa=[], tamaño=10;
+        #scoreboard {
+            margin: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
 
-  function generarLaberinto(nivel){
-    tamaño = (nivel==='facil')?10:(nivel==='medio')?14:(nivel==='dificil')?18:24;
-    const prob = (nivel==='facil')?0.18:(nivel==='medio')?0.26:(nivel==='dificil')?0.34:0.42;
-    mapa = Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
-    jugador={x:0,y:0}; meta={x:tamaño-1,y:tamaño-1};
-    mapa[0][0]=0; mapa[meta.y][meta.x]=0;
-    carveGuaranteedPath();
-  }
+        #gameContainer {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: flex-start;
+            position: relative;
+        }
 
-  function carveGuaranteedPath(){
-    let cx=0, cy=0;
-    while(cx!==meta.x || cy!==meta.y){
-      if(Math.random()<0.5 && cx<meta.x)cx++; else if(cy<meta.y)cy++;
-      mapa[cy][cx]=0;
-      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-      const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)];
-      const nx=cx+dx, ny=cy+dy;
-      if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño) mapa[ny][nx]=0;
-    }
-  }
+        #mazeCanvas {
+            border: 3px solid white;
+            background: #111;
+            margin: 20px;
+        }
 
-  function dibujarLaberinto(){
-    const cont=document.getElementById('laberinto');
-    cont.innerHTML='';
-    const px=Math.max(18,Math.floor(Math.min(window.innerWidth-60,window.innerHeight-200)/tamaño));
-    cont.style.gridTemplateColumns=`repeat(${tamaño},${px}px)`;
-    for(let y=0;y<tamaño;y++){
-      for(let x=0;x<tamaño;x++){
-        const c=document.createElement('div');
-        c.className='celda';
-        if(mapa[y][x]===1)c.classList.add('pared');
-        if(jugador.x===x&&jugador.y===y)c.classList.add('jugador');
-        if(meta.x===x&&meta.y===y)c.classList.add('meta');
-        cont.appendChild(c);
-      }
-    }
-  }
+        #controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-  function iniciarLaberinto(nivel){
-    document.getElementById('laberinto').className = nivel;
-    generarLaberinto(nivel);
-    document.getElementById('tituloLaberinto').textContent = "🧭 Nivel: " + nivel.toUpperCase();
-    dibujarLaberinto();
-    mostrarSeccion('laberintoContainer');
-  }
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background-color: #8a2be2;
+            color: white;
+            transition: 0.3s;
+        }
 
-  document.addEventListener('keydown', e=>{
-    if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
-    let nx=jugador.x, ny=jugador.y;
-    if(e.key==='ArrowUp')ny--;
-    if(e.key==='ArrowDown')ny++;
-    if(e.key==='ArrowLeft')nx--;
-    if(e.key==='ArrowRight')nx++;
-    if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&mapa[ny][nx]===0){
-      jugador.x=nx; jugador.y=ny;
-      dibujarLaberinto();
-      if(nx===meta.x&&ny===meta.y){
-        setTimeout(()=>{ alert('🎉 ¡Has escapado del laberinto!'); mostrarSeccion('juegos'); },300);
-      }
-    }
-  });
+        button:hover {
+            background-color: #5e1b96;
+        }
 
-</script>
+        #finalMessage {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #timer {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        #warning {
+            font-size: 18px;
+            font-weight: bold;
+            color: yellow;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="scoreboard">Nivel: 1 | Puntaje: 0 | Mejor: 0</div>
+    <div id="gameContainer">
+        <canvas id="mazeCanvas" width="600" height="600"></canvas>
+        <div id="controls">
+            <button onclick="restartGame()">Reiniciar</button>
+            <button onclick="newMaze()">Nuevo laberinto</button>
+        </div>
+        <div id="timer">Tiempo: 0s | Mejor: 0s</div>
+    </div>
+    <div id="warning"></div>
+    <div id="finalMessage"></div>
+
+    <script>
+        const canvas = document.getElementById("mazeCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreboard = document.getElementById("scoreboard");
+        const finalMessage = document.getElementById("finalMessage");
+        const timerDisplay = document.getElementById("timer");
+        const warning = document.getElementById("warning");
+
+        let rows = 10;
+        let cols = 10;
+        let cellSize;
+        let grid = [];
+        let player = { x: 0, y: 0 };
+        let goal;
+        let score = 0;
+        let bestScore = localStorage.getItem("bestScore") || 0;
+        let level = 1;
+        let maxLevel = 5;
+        let teas = [];
+        let startTime;
+        let elapsedTime = 0;
+        let bestTime = localStorage.getItem("bestTime") || 0;
+        let timerInterval;
+
+        class Cell {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.walls = [true, true, true, true]; // top, right, bottom, left
+                this.visited = false;
+            }
+
+            draw() {
+                let x = this.x * cellSize;
+                let y = this.y * cellSize;
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                if (this.walls[0]) drawLine(x, y, x + cellSize, y);
+                if (this.walls[1]) drawLine(x + cellSize, y, x + cellSize, y + cellSize);
+                if (this.walls[2]) drawLine(x + cellSize, y + cellSize, x, y + cellSize);
+                if (this.walls[3]) drawLine(x, y + cellSize, x, y);
+            }
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.stroke();
+        }
+
+        function index(x, y) {
+            if (x < 0 || y < 0 || x >= cols || y >= rows) return -1;
+            return x + y * cols;
+        }
+
+        // 🔹 Algoritmo DFS con pila para que siempre se genere un laberinto válido
+        function generateMazeDFS() {
+            let stack = [];
+            let current = grid[0];
+            current.visited = true;
+            stack.push(current);
+            while (stack.length > 0) {
+                let neighbors = [];
+                let { x, y } = current;
+                let top = grid[index(x, y - 1)];
+                let right = grid[index(x + 1, y)];
+                let bottom = grid[index(x, y + 1)];
+                let left = grid[index(x - 1, y)];
+                if (top && !top.visited) neighbors.push({ cell: top, dir: 0 });
+                if (right && !right.visited) neighbors.push({ cell: right, dir: 1 });
+                if (bottom && !bottom.visited) neighbors.push({ cell: bottom, dir: 2 });
+                if (left && !left.visited) neighbors.push({ cell: left, dir: 3 });
+                if (neighbors.length > 0) {
+                    let next = neighbors[Math.floor(Math.random() * neighbors.length)];
+                    // eliminar muros entre current y next
+                    current.walls[next.dir] = false;
+                    next.cell.walls[(next.dir + 2) % 4] = false;
+                    next.cell.visited = true;
+                    stack.push(current);
+                    current = next.cell;
+                } else {
+                    current = stack.pop();
+                }
+            }
+        }
+
+        function setupMaze() {
+            cellSize = Math.floor(canvas.width / cols);
+            grid = [];
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    grid.push(new Cell(x, y));
+                }
+            }
+            player = { x: 0, y: 0 };
+            goal = { x: cols - 1, y: rows - 1 };
+            teas = [];
+            for (let i = 0; i < Math.floor(rows / 2); i++) {
+                teas.push({ x: Math.floor(Math.random() * cols), y: Math.floor(Math.random() * rows) });
+            }
+            generateMazeDFS();
+            drawMaze();
+            if (level === 1) {
+                elapsedTime = 0;
+                startTime = Date.now();
+                clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+                    updateScoreboard();
+                }, 1000);
+            }
+            updateScoreboard();
+        }
+
+        function drawMaze() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            grid.forEach(c => c.draw());
+            // Jugador
+            ctx.font = `${cellSize * 0.7}px Arial`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("👸", player.x * cellSize + cellSize / 2, player.y * cellSize + cellSize / 2);
+            // Meta
+            ctx.fillStyle = "red";
+            ctx.fillRect(goal.x * cellSize + cellSize * 0.25, goal.y * cellSize + cellSize * 0.25, cellSize * 0.5, cellSize * 0.5);
+            // Tazas
+            ctx.font = `${cellSize * 0.5}px Arial`;
+            teas.forEach(t => {
+                ctx.fillText("☕", t.x * cellSize + cellSize / 2, t.y * cellSize + cellSize / 2);
+            });
+        }
+
+        document.addEventListener("keydown", movePlayer);
+
+        function movePlayer(e) {
+            let dx = 0, dy = 0;
+            if (e.key == "ArrowUp") dy = -1;
+            if (e.key == "ArrowDown") dy = 1;
+            if (e.key == "ArrowLeft") dx = -1;
+            if (e.key == "ArrowRight") dx = 1;
+            let current = grid[index(player.x, player.y)];
+            if (dx == 0 && dy == -1 && !current.walls[0]) player.y--;
+            if (dx == 1 && dy == 0 && !current.walls[1]) player.x++;
+            if (dx == 0 && dy == 1 && !current.walls[2]) player.y++;
+            if (dx == -1 && dy == 0 && !current.walls[3]) player.x--;
+            teas = teas.filter(t => {
+                if (t.x == player.x && t.y == player.y) {
+                    score += 10;
+                    updateScoreboard();
+                    return false;
+                }
+                return true;
+            });
+            if (player.x == goal.x && player.y == goal.y) {
+                if (teas.length > 0) {
+                    warning.textContent = "⚠️ Te faltan tazas por recoger";
+                    setTimeout(() => { warning.textContent = ""; }, 2000);
+                } else {
+                    warning.textContent = "";
+                    if (level < maxLevel) {
+                        level++;
+                        rows += 2;
+                        cols += 2;
+                        setupMaze();
+                    } else {
+                        clearInterval(timerInterval);
+                        if (elapsedTime < bestTime || bestTime == 0) {
+                            bestTime = elapsedTime;
+                            localStorage.setItem("bestTime", bestTime);
+                        }
+                        if (score > bestScore) {
+                            bestScore = score;
+                            localStorage.setItem("bestScore", bestScore);
+                        }
+                        finalMessage.innerHTML = `🎉 ¡Ganaste! Puntaje: ${score} | Mejor: ${bestScore} | Tiempo total: ${elapsedTime}s | Mejor tiempo: ${bestTime}s`;
+                    }
+                }
+            }
+            drawMaze();
+        }
+
+        function restartGame() {
+            score = 0;
+            level = 1;
+            rows = 10;
+            cols = 10;
+            finalMessage.innerHTML = "";
+            setupMaze();
+        }
+
+        function newMaze() {
+            setupMaze();
+        }
+
+        function updateScoreboard() {
+            scoreboard.textContent = `Nivel: ${level} | Puntaje: ${score} | Mejor: ${bestScore}`;
+            timerDisplay.textContent = `Tiempo: ${elapsedTime}s | Mejor: ${bestTime}s`;
+        }
+
+        setupMaze();
+    </script>
 </body>
+
 </html>
