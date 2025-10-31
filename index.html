@@ -7,10 +7,12 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
       margin: 0; padding: 0;
       text-align: center;
-      transition: background 1s ease;
+      animation: psychedelico 10s infinite alternate;
+      background: linear-gradient(45deg, #ff0080, #ffdd00, #00ff77, #00aaff, #ff6600);
+      background-size: 400% 400%;
+      height: 100vh;
     }
 
     h1, h2 {
@@ -70,6 +72,18 @@
     .explicacion p {
       font-size: 16px;
       line-height: 1.6;
+    }
+
+    @keyframes psychedelico {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
     }
   </style>
 </head>
