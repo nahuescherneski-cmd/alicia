@@ -7,14 +7,15 @@
 <style>
   body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
     margin: 0; padding: 0;
     text-align: center;
-    transition: background 1s ease;
+    animation: psicodelico 10s infinite alternate;
+    background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f);
+    background-size: 400% 400%;
   }
 
   h1, h2 {
-    color: #3b0066;
+    color: white;
   }
 
   section {
@@ -46,7 +47,7 @@
 
   .acertijo {
     margin: 20px auto;
-    background: #fff6ff;
+    background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 15px;
     width: 70%;
@@ -73,25 +74,16 @@
   .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
   .meta { background: #ff5c8d; }
 
-  /* Efectos mundo ilógico */
-  .ilogico {
-    background: radial-gradient(circle, #ff0000, #550000);
-    animation: glitch 1s infinite alternate;
+  @keyframes psicodelico {
+    0% { background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f); }
+    25% { background: linear-gradient(45deg, #8c1d8f, #ff420e, #ffd300, #000b6c); }
+    50% { background: linear-gradient(45deg, #0ff000, #ff0000, #f5ff00, #7030a0); }
+    75% { background: linear-gradient(45deg, #ff0a85, #2b0044, #40d1b3, #bdb600); }
+    100% { background: linear-gradient(45deg, #ff5ec3, #2a2a72, #ffbd00, #7e3f5f); }
   }
-
-  @keyframes glitch {
-    0% { filter: hue-rotate(0deg) brightness(1); }
-    100% { filter: hue-rotate(20deg) brightness(1.2); }
-  }
-
-  /* Estilos para los laberintos */
-  .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
-  .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
-  .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
-  .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
 
   .resumen {
-    background: rgba(255,255,255,0.7);
+    background: rgba(255, 255, 255, 0.7);
     margin: 20px auto;
     padding: 15px;
     border-radius: 12px;
@@ -210,72 +202,6 @@
     document.body.classList.remove("ilogico");
     mostrarSeccion('acertijoContainer');
   }
-
-  /* ===== LABERINTO ===== */
-  let jugador={x:0,y:0}, meta={x:0,y:0}, mapa=[], tamaño=10;
-
-  function generarLaberinto(nivel){
-    tamaño = (nivel==='facil')?10:(nivel==='medio')?14:(nivel==='dificil')?18:24;
-    const prob = (nivel==='facil')?0.18:(nivel==='medio')?0.26:(nivel==='dificil')?0.34:0.42;
-    mapa = Array.from({length:tamaño},()=>Array.from({length:tamaño},()=>Math.random()<prob?1:0));
-    jugador={x:0,y:0}; meta={x:tamaño-1,y:tamaño-1};
-    mapa[0][0]=0; mapa[meta.y][meta.x]=0;
-    carveGuaranteedPath();
-  }
-
-  function carveGuaranteedPath(){
-    let cx=0, cy=0;
-    while(cx!==meta.x || cy!==meta.y){
-      if(Math.random()<0.5 && cx<meta.x)cx++; else if(cy<meta.y)cy++;
-      mapa[cy][cx]=0;
-      const dirs=[[1,0],[-1,0],[0,1],[0,-1]];
-      const [dx,dy]=dirs[Math.floor(Math.random()*dirs.length)];
-      const nx=cx+dx, ny=cy+dy;
-      if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño) mapa[ny][nx]=0;
-    }
-  }
-
-  function dibujarLaberinto(){
-    const cont=document.getElementById('laberinto');
-    cont.innerHTML='';
-    const px=Math.max(18,Math.floor(Math.min(window.innerWidth-60,window.innerHeight-200)/tamaño));
-    cont.style.gridTemplateColumns=`repeat(${tamaño},${px}px)`;
-    for(let y=0;y<tamaño;y++){
-      for(let x=0;x<tamaño;x++){
-        const c=document.createElement('div');
-        c.className='celda';
-        if(mapa[y][x]===1)c.classList.add('pared');
-        if(jugador.x===x&&jugador.y===y)c.classList.add('jugador');
-        if(meta.x===x&&meta.y===y)c.classList.add('meta');
-        cont.appendChild(c);
-      }
-    }
-  }
-
-  function iniciarLaberinto(nivel){
-    document.getElementById('laberinto').className = nivel;
-    generarLaberinto(nivel);
-    document.getElementById('tituloLaberinto').textContent = "🧭 Nivel: " + nivel.toUpperCase();
-    dibujarLaberinto();
-    mostrarSeccion('laberintoContainer');
-  }
-
-  document.addEventListener('keydown', e=>{
-    if(!document.getElementById('laberintoContainer').classList.contains('activo')) return;
-    let nx=jugador.x, ny=jugador.y;
-    if(e.key==='ArrowUp')ny--;
-    if(e.key==='ArrowDown')ny++;
-    if(e.key==='ArrowLeft')nx--;
-    if(e.key==='ArrowRight')nx++;
-    if(nx>=0&&ny>=0&&nx<tamaño&&ny<tamaño&&mapa[ny][nx]===0){
-      jugador.x=nx; jugador.y=ny;
-      dibujarLaberinto();
-      if(nx===meta.x&&ny===meta.y){
-        setTimeout(()=>{ alert('🎉 ¡Has escapado del laberinto!'); mostrarSeccion('juegos'); },300);
-      }
-    }
-  });
-
 </script>
 </body>
 </html>
