@@ -1,104 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alicia en el País de las Maravillas - Juego</title>
-<style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
-    margin: 0; padding: 0;
-    text-align: center;
-    transition: background 1s ease;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alicia en el País de las Maravillas - Juego</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to bottom right, #b4e0ff, #ffe3ff);
+      margin: 0; padding: 0;
+      text-align: center;
+      transition: background 1s ease;
+    }
 
-  h1, h2 {
-    color: #3b0066;
-  }
+    h1, h2 {
+      color: #3b0066;
+    }
 
-  section {
-    display: none;
-    padding: 30px;
-    min-height: 100vh;
-  }
+    section {
+      display: none;
+      padding: 30px;
+      min-height: 100vh;
+    }
 
-  .activo {
-    display: block;
-  }
+    .activo {
+      display: block;
+    }
 
-  button {
-    background: #7b00ff;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 12px;
-    margin: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-  }
+    button {
+      background: #7b00ff;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 12px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
 
-  button:hover {
-    background: #9f33ff;
-    transform: scale(1.05);
-  }
+    button:hover {
+      background: #9f33ff;
+      transform: scale(1.05);
+    }
 
-  .acertijo {
-    margin: 20px auto;
-    background: #fff6ff;
-    padding: 20px;
-    border-radius: 15px;
-    width: 70%;
-    max-width: 600px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.2);
-  }
+    .acertijo {
+      margin: 20px auto;
+      background: #fff6ff;
+      padding: 20px;
+      border-radius: 15px;
+      width: 70%;
+      max-width: 600px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    }
 
-  #laberinto {
-    display: grid;
-    justify-content: center;
-    gap: 2px;
-    margin: 20px auto;
-    overflow-y: auto;
-    max-height: 70vh;
-  }
+    #laberinto {
+      display: grid;
+      justify-content: center;
+      gap: 2px;
+      margin: 20px auto;
+      overflow-y: auto;
+      max-height: 70vh;
+    }
 
-  .celda {
-    width: 24px; height: 24px;
-    border-radius: 5px;
-    transition: 0.2s;
-  }
+    .celda {
+      width: 24px; height: 24px;
+      border-radius: 5px;
+      transition: 0.2s;
+    }
 
-  .pared { background: #2f0052; }
-  .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
-  .meta { background: #ff5c8d; }
+    .pared { background: #2f0052; }
+    .jugador { background: #00ff88; box-shadow: 0 0 8px #00ff88; }
+    .meta { background: #ff5c8d; }
 
-  /* Efectos mundo ilógico */
-  .ilogico {
-    background: radial-gradient(circle, #ff0000, #550000);
-    animation: glitch 1s infinite alternate;
-  }
+    /* Efectos mundo ilógico */
+    .ilogico {
+      background: radial-gradient(circle, #ff0000, #550000);
+      animation: glitch 1s infinite alternate;
+    }
 
-  @keyframes glitch {
-    0% { filter: hue-rotate(0deg) brightness(1); }
-    100% { filter: hue-rotate(20deg) brightness(1.2); }
-  }
+    @keyframes glitch {
+      0% { filter: hue-rotate(0deg) brightness(1); }
+      100% { filter: hue-rotate(20deg) brightness(1.2); }
+    }
 
-  /* Estilos para los laberintos */
-  .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
-  .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
-  .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
-  .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
+    /* Estilos para los laberintos */
+    .facil { background-image: url('https://example.com/cesped.jpg'); background-size: cover; }
+    .medio { background-image: url('https://example.com/bosque.jpg'); background-size: cover; }
+    .dificil { background-image: url('https://example.com/castillo.jpg'); background-size: cover; }
+    .imposible { background-image: url('https://example.com/fuego.jpg'); background-size: cover; }
 
-  .resumen {
-    background: rgba(255,255,255,0.7);
-    margin: 20px auto;
-    padding: 15px;
-    border-radius: 12px;
-    width: 80%;
-    font-size: 17px;
-  }
-</style>
+    .resumen {
+      background: rgba(255,255,255,0.7);
+      margin: 20px auto;
+      padding: 15px;
+      border-radius: 12px;
+      width: 80%;
+      font-size: 17px;
+    }
+  </style>
 </head>
 <body>
 
@@ -193,7 +193,7 @@
     r.opciones.forEach(op=>{
       const b = document.createElement('button');
       b.textContent = op;
-      b.onclick = ()=>{
+      b.onclick = ()=>{ 
         if(op===r.correcta){
           b.style.background='#00ff88';
           setTimeout(()=>{
